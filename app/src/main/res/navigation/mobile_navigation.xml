@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/mobile_navigation"
+    app:startDestination="@id/signUpFragment">
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.camtittle.photosharing.ui.signup.SignUpFragment"
+        android:label="SignUpFragment" >
+        <action
+            android:id="@+id/action_signUpFragment_to_unconfirmedAccountFragment"
+            app:destination="@id/unconfirmedAccountFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/unconfirmedAccountFragment"
+        android:name="com.camtittle.photosharing.ui.auth.unconfirmed.UnconfirmedAccountFragment"
+        android:label="UnconfirmedAccountFragment" >
+        <argument
+            android:name="confirmationLinkDestination"
+            app:argType="string" />
+    </fragment>
+</navigation>

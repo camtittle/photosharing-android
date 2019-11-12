@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PhotoSharing</string>
+    <string name="email_input_label">Email</string>
+    <string name="password_input_label">Create a password</string>
+    <string name="signup_cta_label">Sign Up</string>
+    <string name="signup_title">Sign up</string>
+    <string name="check_account_status_label">I\'ve done this</string>
+</resources>
