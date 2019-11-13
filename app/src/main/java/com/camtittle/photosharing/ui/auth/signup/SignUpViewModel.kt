@@ -1,4 +1,4 @@
-package com.camtittle.photosharing.ui.signup
+package com.camtittle.photosharing.ui.auth.signup
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -20,11 +20,11 @@ class SignUpViewModel : ViewModel() {
 
     fun onClickSubmitButton() {
         Log.d(tag, "button clicked")
-        Log.d(tag, signUp.email ?: "empty")
+        Log.d(tag, signUp.email)
 
-        val email = signUp.email;
-        val password = signUp.password;
-        if (email != null && password != null) {
+        val email = signUp.email
+        val password = signUp.password
+        if (email.isNotBlank() && password.isNotBlank()) {
             CognitoService.signUp(email, password, object : ServiceCallback<SignUpResponse> {
                 override fun onError(error: CallbackError) {
                     Log.d(tag, "ERROR. " + error.msg)

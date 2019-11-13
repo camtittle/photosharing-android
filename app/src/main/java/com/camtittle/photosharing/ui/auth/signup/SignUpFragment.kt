@@ -1,4 +1,4 @@
-package com.camtittle.photosharing.ui.signup
+package com.camtittle.photosharing.ui.auth.signup
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -41,7 +41,7 @@ class SignUpFragment : Fragment() {
     private fun observeSignUpResult() {
         viewModel.signUpResponse.observe(viewLifecycleOwner, Observer {
             if (!it.confirmed) {
-                navigateToUnconfirmedAccount(it.confirmationDestination)
+                navigateToUnconfirmedAccount(viewModel.signUp.email)
             }
         })
     }

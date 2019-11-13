@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.camtittle.photosharing.ui.signup.SignUpFragment"
+        android:name="com.camtittle.photosharing.ui.auth.signup.SignUpFragment"
         android:label="SignUpFragment" >
         <action
             android:id="@+id/action_signUpFragment_to_unconfirmedAccountFragment"

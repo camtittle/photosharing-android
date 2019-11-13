@@ -26,7 +26,7 @@ class UnconfirmedAccountFragment : Fragment() {
 
         val args = UnconfirmedAccountFragmentArgs.fromBundle(arguments)
         args.confirmationLinkDestination.let {
-            viewModel.confirmationDestination = it
+            viewModel.unconfirmedEmail = it
         }
 
         binding.model = viewModel
@@ -34,7 +34,7 @@ class UnconfirmedAccountFragment : Fragment() {
 
     private fun addButtonClickListener() {
         binding.checkAccountStatusButton.setOnClickListener {
-            viewModel.onClickCheckStatusButton()
+            viewModel.onClickConfirmAccountButton()
         }
     }
 

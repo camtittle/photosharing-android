@@ -6,7 +6,7 @@
     <data>
         <variable
             name="model"
-            type="com.camtittle.photosharing.ui.signup.SignUpViewModel" />
+            type="com.camtittle.photosharing.ui.auth.signup.SignUpViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

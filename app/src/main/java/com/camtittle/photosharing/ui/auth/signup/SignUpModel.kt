@@ -1,4 +1,4 @@
-package com.camtittle.photosharing.ui.signup
+package com.camtittle.photosharing.ui.auth.signup
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
@@ -6,14 +6,14 @@ import androidx.databinding.library.baseAdapters.BR
 
 class SignUpModel : BaseObservable() {
 
-    var email: String? = null
+    var email: String = ""
     @Bindable get() = field
     set(email) {
         field = email
         notifyPropertyChanged(BR.email)
     }
 
-    var password: String? = null
+    var password: String = ""
     @Bindable get() = field
     set(password) {
         field = password
