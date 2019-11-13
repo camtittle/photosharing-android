@@ -4,5 +4,6 @@
     <string name="password_input_label">Create a password</string>
     <string name="signup_cta_label">Sign Up</string>
     <string name="signup_title">Sign up</string>
-    <string name="check_account_status_label">I\'ve done this</string>
+    <string name="unconfirmed_account_button_label">I\'ve done this</string>
+    <string name="unconfirmed_account_message">A verification link has been sent to %s\n\nPlease click the link and return here.</string>
 </resources>

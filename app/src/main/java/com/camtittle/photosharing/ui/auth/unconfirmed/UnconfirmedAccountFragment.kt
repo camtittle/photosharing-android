@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.navArgs
 import com.camtittle.photosharing.databinding.UnconfirmedAccountFragmentBinding
 
 class UnconfirmedAccountFragment : Fragment() {
@@ -27,7 +26,7 @@ class UnconfirmedAccountFragment : Fragment() {
 
         val args = UnconfirmedAccountFragmentArgs.fromBundle(arguments)
         args.confirmationLinkDestination.let {
-            viewModel.message = it
+            viewModel.confirmationDestination = it
         }
 
         binding.model = viewModel
