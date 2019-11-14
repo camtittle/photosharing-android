@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.signup.SignUpFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -13,7 +12,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".ui.signup.SignInFragment">
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -32,12 +32,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:paddingBottom="40dp"
-                android:text="@string/signup_title"
+                android:text="@string/signin_title"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/signupEmail"
+                android:id="@+id/signInEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -47,20 +47,20 @@
                 android:text="@={model.model.email}" />
 
             <EditText
-                android:id="@+id/signupPassword"
+                android:id="@+id/signInPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="@string/create_password_input_label"
+                android:hint="@string/password_input_label"
                 android:inputType="textPassword"
                 android:paddingTop="@dimen/defaultPadding"
                 android:text="@={model.model.password}" />
 
             <Button
-                android:id="@+id/signUpSubmitButton"
+                android:id="@+id/signInSubmitButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/signup_cta_label" />
+                android:text="@string/signin_cta_label" />
 
             <TextView
                 android:id="@+id/existingAccountPrompt"
@@ -68,16 +68,16 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:paddingTop="@dimen/defaultPadding"
-                android:text="@string/signup_signin_hint" />
+                android:text="@string/signin_signup_hint" />
 
             <TextView
-                android:id="@+id/signUpSignInButton"
+                android:id="@+id/signInSignUpButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_horizontal"
-                android:text="@string/signup_signin_cta_label"
+                android:text="@string/signin_signup_cta_label"
                 android:textColor="#673AB7" />
 
 

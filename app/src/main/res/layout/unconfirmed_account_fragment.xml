@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".ui.auth.unconfirmed.UnconfirmedAccountFragment">
 
     <data>
         <variable
             name="model"
-            type="com.camtittle.photosharing.ui.auth.unconfirmed.UnconfirmedAccountViewModel" />
+            type="com.camtittle.photosharing.ui.auth.AuthViewModel" />
     </data>
 
 
@@ -28,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingBottom="@dimen/defaultPadding"
-                android:text="@{@string/unconfirmed_account_message(model.unconfirmedEmail)}"
+                android:text="@{@string/unconfirmed_account_message(model.model.email)}"
                 android:textSize="18sp" />
 
             <EditText
@@ -40,7 +41,7 @@
                 android:hint="@string/unconfirmed_account_code_input_hint"
                 android:inputType="number"
                 android:autofillHints="false"
-                android:text="@={model.code}"
+                android:text="@={model.model.confirmationCode}"
                 android:textSize="30sp" />
 
             <Button

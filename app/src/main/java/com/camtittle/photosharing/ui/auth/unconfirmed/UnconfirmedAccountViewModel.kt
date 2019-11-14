@@ -1,6 +1,8 @@
 package com.camtittle.photosharing.ui.auth.unconfirmed
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.camtittle.photosharing.engine.auth.CognitoService
 import com.camtittle.photosharing.engine.auth.model.ConfirmResponse
@@ -10,7 +12,11 @@ import com.camtittle.photosharing.engine.common.async.ServiceCallback
 class UnconfirmedAccountViewModel : ViewModel() {
 
     var unconfirmedEmail: String? = null
+    var password: String = ""
     var code: String = ""
+
+    private val _confirmResponse = MutableLiveData<ConfirmResponse>()
+    val confirmedResponse: LiveData<ConfirmResponse> = _confirmResponse
 
     private val tag = UnconfirmedAccountViewModel::class.java.name
 
@@ -22,8 +28,7 @@ class UnconfirmedAccountViewModel : ViewModel() {
                 override fun onSuccess(response: ConfirmResponse) {
                     if (response.confirmed) {
                         Log.d(tag, "Confirmation successful for email $unconfirmedEmail")
-                        val signedIn = CognitoService.isSignedIn()
-                        Log.d(tag, "isSignedIn: $signedIn")
+                        _confirmResponse.postValue(response)
                     }
                 }
 

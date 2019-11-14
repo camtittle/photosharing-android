@@ -5,12 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.camtittle.photosharing.databinding.UnconfirmedAccountFragmentBinding
+import com.camtittle.photosharing.ui.auth.AuthViewModel
 
 class UnconfirmedAccountFragment : Fragment() {
 
-    private lateinit var viewModel: UnconfirmedAccountViewModel
+    private lateinit var viewModel: AuthViewModel
     private lateinit var binding: UnconfirmedAccountFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -19,23 +22,29 @@ class UnconfirmedAccountFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(UnconfirmedAccountViewModel::class.java)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProviders.of(activity!!).get(AuthViewModel::class.java)
         addButtonClickListener()
-
-        val args = UnconfirmedAccountFragmentArgs.fromBundle(arguments)
-        args.confirmationLinkDestination.let {
-            viewModel.unconfirmedEmail = it
-        }
-
+        observeSignInResponse()
         binding.model = viewModel
     }
 
     private fun addButtonClickListener() {
         binding.checkAccountStatusButton.setOnClickListener {
-            viewModel.onClickConfirmAccountButton()
+            viewModel.confirmAccount()
         }
+    }
+
+    private fun observeSignInResponse() {
+        viewModel.signInResponse.observe(viewLifecycleOwner, Observer {
+            navigateToFeed()
+        })
+    }
+
+    private fun navigateToFeed() {
+        val action = UnconfirmedAccountFragmentDirections.actionUnconfirmedAccountFragmentToFeedFragment()
+        findNavController().navigate(action)
     }
 
 }

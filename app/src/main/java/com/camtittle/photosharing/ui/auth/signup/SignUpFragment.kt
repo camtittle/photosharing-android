@@ -9,11 +9,16 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.camtittle.photosharing.databinding.SignUpFragmentBinding
+import com.camtittle.photosharing.ui.auth.AuthViewModel
 
 class SignUpFragment : Fragment() {
 
-    private lateinit var viewModel: SignUpViewModel
+    private lateinit var viewModel: AuthViewModel
     private lateinit var binding: SignUpFragmentBinding
+
+    companion object {
+        fun newInstance() = SignUpFragment()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -23,17 +28,23 @@ class SignUpFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SignUpViewModel::class.java)
-
-        addButtonClickListener()
-        observeSignUpResult()
-
+        viewModel = ViewModelProviders.of(activity!!).get(AuthViewModel::class.java)
         binding.model = viewModel
+
+        addSubmitButtonClickListener()
+        addSignInButtonClickListener()
+        observeSignUpResult()
     }
 
-    private fun addButtonClickListener() {
+    private fun addSubmitButtonClickListener() {
         binding.signUpSubmitButton.setOnClickListener {
-            viewModel.onClickSubmitButton()
+            viewModel.signUp()
+        }
+    }
+
+    private fun addSignInButtonClickListener() {
+        binding.signUpSignInButton.setOnClickListener {
+            navigateToSignIn()
         }
     }
 
@@ -41,14 +52,20 @@ class SignUpFragment : Fragment() {
     private fun observeSignUpResult() {
         viewModel.signUpResponse.observe(viewLifecycleOwner, Observer {
             if (!it.confirmed) {
-                navigateToUnconfirmedAccount(viewModel.signUp.email)
+                navigateToUnconfirmedAccount()
             }
         })
     }
 
-    private fun navigateToUnconfirmedAccount(confirmationDestination: String) {
-        val action = SignUpFragmentDirections.actionSignUpFragmentToUnconfirmedAccountFragment(confirmationDestination)
+    private fun navigateToUnconfirmedAccount() {
+        val action = SignUpFragmentDirections.actionSignUpFragmentToUnconfirmedAccountFragment()
         findNavController().navigate(action)
+    }
+
+    private fun navigateToSignIn() {
+        val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment()
+        findNavController().navigate(action)
+
     }
 
 

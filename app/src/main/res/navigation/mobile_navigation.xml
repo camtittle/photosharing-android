@@ -1,23 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/mobile_navigation"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
     app:startDestination="@id/signUpFragment">
 
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.camtittle.photosharing.ui.auth.signup.SignUpFragment"
-        android:label="SignUpFragment" >
+        android:label="SignUpFragment"
+        tools:layout="@layout/sign_up_fragment" >
         <action
             android:id="@+id/action_signUpFragment_to_unconfirmedAccountFragment"
             app:destination="@id/unconfirmedAccountFragment"
-            app:enterAnim="@anim/nav_default_enter_anim" />
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left" />
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/unconfirmedAccountFragment"
         android:name="com.camtittle.photosharing.ui.auth.unconfirmed.UnconfirmedAccountFragment"
-        android:label="UnconfirmedAccountFragment" >
-        <argument
-            android:name="confirmationLinkDestination"
-            app:argType="string" />
+        android:label="UnconfirmedAccountFragment"
+        tools:layout="@layout/unconfirmed_account_fragment" >
+        <action
+            android:id="@+id/action_unconfirmedAccountFragment_to_feedFragment"
+            app:destination="@id/feedFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpTo="@+id/signUpFragment"
+            app:popUpToInclusive="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.camtittle.photosharing.ui.auth.signin.SignInFragment"
+        android:label="sign_in_fragment"
+        tools:layout="@layout/sign_in_fragment" >
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_signInFragment_to_feedFragment"
+            app:destination="@id/feedFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popUpTo="@+id/signInFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="com.camtittle.photosharing.ui.feed.FeedFragment"
+        android:label="feed_fragment"
+        tools:layout="@layout/feed_fragment" />
 </navigation>

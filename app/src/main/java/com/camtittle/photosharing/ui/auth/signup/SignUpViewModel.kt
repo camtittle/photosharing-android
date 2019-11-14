@@ -19,12 +19,9 @@ class SignUpViewModel : ViewModel() {
     private val tag = SignUpViewModel::class.java.name
 
     fun onClickSubmitButton() {
-        Log.d(tag, "button clicked")
-        Log.d(tag, signUp.email)
-
         val email = signUp.email
         val password = signUp.password
-        if (email.isNotBlank() && password.isNotBlank()) {
+            if (email.isNotBlank() && password.isNotBlank()) {
             CognitoService.signUp(email, password, object : ServiceCallback<SignUpResponse> {
                 override fun onError(error: CallbackError) {
                     Log.d(tag, "ERROR. " + error.msg)
