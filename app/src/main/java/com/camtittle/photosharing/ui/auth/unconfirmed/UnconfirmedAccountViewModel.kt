@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.camtittle.photosharing.engine.auth.CognitoService
+import com.camtittle.photosharing.engine.auth.AuthManager
 import com.camtittle.photosharing.engine.auth.model.ConfirmResponse
 import com.camtittle.photosharing.engine.common.async.CallbackError
 import com.camtittle.photosharing.engine.common.async.ServiceCallback
@@ -24,7 +24,7 @@ class UnconfirmedAccountViewModel : ViewModel() {
         Log.d(tag, "Confirming with code: $code")
         val email = unconfirmedEmail
         if (!email.isNullOrEmpty() && code.isNotEmpty()) {
-            CognitoService.confirmAccount(email, code, object : ServiceCallback<ConfirmResponse> {
+            AuthManager.confirmAccount(email, code, object : ServiceCallback<ConfirmResponse> {
                 override fun onSuccess(response: ConfirmResponse) {
                     if (response.confirmed) {
                         Log.d(tag, "Confirmation successful for email $unconfirmedEmail")

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.camtittle.photosharing.engine.auth.CognitoService
+import com.camtittle.photosharing.engine.auth.AuthManager
 import com.camtittle.photosharing.engine.auth.model.ConfirmResponse
 import com.camtittle.photosharing.engine.auth.model.SignInResponse
 import com.camtittle.photosharing.engine.auth.model.SignUpResponse
@@ -30,7 +30,7 @@ class AuthViewModel : ViewModel() {
         val email = model.email
         val password = model.password
         if (email.isNotBlank() && password.isNotBlank()) {
-            CognitoService.signUp(email, password, object : ServiceCallback<SignUpResponse> {
+            AuthManager.signUp(email, password, object : ServiceCallback<SignUpResponse> {
                 override fun onError(error: CallbackError) {
                     Log.d(tag, "ERROR. " + error.msg)
                 }
@@ -49,7 +49,7 @@ class AuthViewModel : ViewModel() {
         val code = model.confirmationCode
         Log.d(tag, "Confirming $email with code: $code")
         if (email.isNotEmpty() && code.isNotEmpty()) {
-            CognitoService.confirmAccount(email, code, object : ServiceCallback<ConfirmResponse> {
+            AuthManager.confirmAccount(email, code, object : ServiceCallback<ConfirmResponse> {
                 override fun onSuccess(response: ConfirmResponse) {
                     if (response.confirmed) {
                         Log.d(tag, "Confirmation successful for email $email")
@@ -73,7 +73,7 @@ class AuthViewModel : ViewModel() {
         val password = model.password
         Log.d(tag, "$email $password")
         if (!email.isBlank() && !password.isBlank()) {
-            CognitoService.signIn(email, password, object : ServiceCallback<SignInResponse> {
+            AuthManager.signIn(email, password, object : ServiceCallback<SignInResponse> {
                 override fun onSuccess(response: SignInResponse) {
                     _signInResponse.postValue(response)
                 }

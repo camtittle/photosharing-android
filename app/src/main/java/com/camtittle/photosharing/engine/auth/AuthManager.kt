@@ -14,9 +14,9 @@ import com.camtittle.photosharing.engine.common.async.CallbackError
 import com.camtittle.photosharing.engine.common.async.ServiceCallback
 import java.lang.Exception
 
-object CognitoService {
+object AuthManager {
 
-    val instance = AWSMobileClient.getInstance()
+    private val instance: AWSMobileClient = AWSMobileClient.getInstance()
 
     fun signUp(email: String, password: String, callback: ServiceCallback<SignUpResponse>) {
         // We are using email as username here, but also add email as a user attribute

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.camtittle.photosharing.engine.auth.CognitoService
+import com.camtittle.photosharing.engine.auth.AuthManager
 import com.camtittle.photosharing.engine.auth.model.SignUpResponse
 import com.camtittle.photosharing.engine.common.async.CallbackError
 import com.camtittle.photosharing.engine.common.async.ServiceCallback
@@ -22,7 +22,7 @@ class SignUpViewModel : ViewModel() {
         val email = signUp.email
         val password = signUp.password
             if (email.isNotBlank() && password.isNotBlank()) {
-            CognitoService.signUp(email, password, object : ServiceCallback<SignUpResponse> {
+            AuthManager.signUp(email, password, object : ServiceCallback<SignUpResponse> {
                 override fun onError(error: CallbackError) {
                     Log.d(tag, "ERROR. " + error.msg)
                 }
