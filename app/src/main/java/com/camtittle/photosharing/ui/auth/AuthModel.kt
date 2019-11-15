@@ -26,4 +26,10 @@ class AuthModel : BaseObservable() {
             field = code
             notifyPropertyChanged(BR.confirmationCode)
         }
+
+    fun clear() {
+        email = ""
+        password = ""
+        confirmationCode = ""
+    }
 }

@@ -77,6 +77,7 @@ class AuthViewModel : ViewModel() {
             AuthManager.signIn(email, password, object : ServiceCallback<SignInResponse> {
                 override fun onSuccess(response: SignInResponse) {
                     _signInResponse.postValue(Event(response))
+                    model.clear()
                 }
 
                 override fun onError(error: CallbackError) {
