@@ -3,39 +3,60 @@ package com.camtittle.photosharing
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.core.view.GravityCompat
 import androidx.navigation.Navigation.findNavController
-import com.amazonaws.mobile.client.AWSMobileClient
-import com.amazonaws.mobile.client.Callback
-import com.amazonaws.mobile.client.UserStateDetails
+import androidx.navigation.ui.NavigationUI.*
+import com.camtittle.photosharing.engine.auth.AuthManager
+import kotlinx.android.synthetic.main.main_activity.*
 import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AuthManager.init(applicationContext)
+
         setContentView(R.layout.main_activity)
-
+        setSupportActionBar(toolbar)
         setupNavigation()
+    }
 
-        AWSMobileClient.getInstance().initialize(applicationContext, object : Callback<UserStateDetails?> {
-            override fun onResult(result: UserStateDetails?) {
-                Log.d("AWSINIT", "onResult: " + result?.userState)
-            }
+    override fun onSupportNavigateUp(): Boolean {
+        return navigateUp(findNavController(this, R.id.nav_host_fragment), drawerLayout)
+    }
 
-            override fun onError(e: Exception?) {
-                Log.e("AWSINIT", "onError: ", e)
-            }
-        })
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun setupNavigation() {
         val navController = findNavController(this, R.id.nav_host_fragment)
 
-        // TODO set up action bar with nav controller here
+        // Update action bar to reflect navigation
+        setupActionBarWithNavController(this, navController, drawerLayout)
 
-        // TODO handle nav drawer item click
+        val logoutItem = navigationView.menu.findItem(R.id.sign_out)
+        logoutItem.setOnMenuItemClickListener {
+            AuthManager.signOut()
+            findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_global_auth_navigation)
+            drawerLayout.closeDrawers()
+            true
+        }
 
-        // setupWithNavController(navigationView, navController)
+        // Handle nav drawer item clicks
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            menuItem.isChecked = true
+            drawerLayout.closeDrawers()
+            true
+        }
+
+        // Tie nav graph to items in nav drawer
+        setupWithNavController(navigationView, navController)
 
     }
 }

@@ -2,6 +2,7 @@ package com.camtittle.photosharing.ui.feed
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,7 @@ class FeedFragment : Fragment() {
     }
 
     private fun ensureAuthorised() {
+        Log.d(tag, "Ensure authorised")
         if (!viewModel.isSignedIn()) {
             val action = FeedFragmentDirections.actionGlobalAuthNavigation()
             findNavController().navigate(action)

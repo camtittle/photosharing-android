@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.camtittle.photosharing.databinding.UnconfirmedAccountFragmentBinding
+import com.camtittle.photosharing.engine.common.result.EventObserver
 import com.camtittle.photosharing.ui.auth.AuthViewModel
 
 class UnconfirmedAccountFragment : Fragment() {
@@ -37,7 +38,7 @@ class UnconfirmedAccountFragment : Fragment() {
     }
 
     private fun observeSignInResponse() {
-        viewModel.signInResponse.observe(viewLifecycleOwner, Observer {
+        viewModel.signInResponse.observe(viewLifecycleOwner, EventObserver {
             navigateToFeed()
         })
     }

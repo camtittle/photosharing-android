@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 
 import com.camtittle.photosharing.databinding.SignInFragmentBinding
+import com.camtittle.photosharing.engine.common.result.EventObserver
 import com.camtittle.photosharing.ui.auth.AuthViewModel
 
 class SignInFragment : Fragment() {
@@ -21,6 +22,8 @@ class SignInFragment : Fragment() {
     companion object {
         fun newInstance() = SignInFragment()
     }
+
+    private val logTag = SignInFragment::class.java.name
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -46,16 +49,15 @@ class SignInFragment : Fragment() {
 
     private fun addSignInButtonClickListener() {
         binding.signInSubmitButton.setOnClickListener {
-            Log.d(tag, "SIGN IN CLICK ${viewModel.model.email}")
+            Log.d(logTag, "SIGN IN CLICK ${viewModel.model.email}")
             viewModel.signIn()
         }
     }
 
     private fun observeSignInResponse() {
-        viewModel.signInResponse.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                navigateToFeed()
-            }
+        viewModel.signInResponse.observe(viewLifecycleOwner, EventObserver {
+            Log.d(logTag, "observing sign in response")
+            navigateToFeed()
         })
     }
 

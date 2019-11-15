@@ -10,6 +10,7 @@ import com.camtittle.photosharing.engine.auth.model.SignInResponse
 import com.camtittle.photosharing.engine.auth.model.SignUpResponse
 import com.camtittle.photosharing.engine.common.async.CallbackError
 import com.camtittle.photosharing.engine.common.async.ServiceCallback
+import com.camtittle.photosharing.engine.common.result.Event
 
 class AuthViewModel : ViewModel() {
 
@@ -18,8 +19,8 @@ class AuthViewModel : ViewModel() {
     private val _signUpResponse = MutableLiveData<SignUpResponse>()
     val signUpResponse: LiveData<SignUpResponse> = _signUpResponse
 
-    private val _signInResponse = MutableLiveData<SignInResponse>()
-    val signInResponse: LiveData<SignInResponse> = _signInResponse
+    private val _signInResponse = MutableLiveData<Event<SignInResponse>>()
+    val signInResponse: LiveData<Event<SignInResponse>> = _signInResponse
 
     private val _confirmResponse = MutableLiveData<ConfirmResponse>()
     val confirmResponse: LiveData<ConfirmResponse> = _confirmResponse
@@ -75,7 +76,7 @@ class AuthViewModel : ViewModel() {
         if (!email.isBlank() && !password.isBlank()) {
             AuthManager.signIn(email, password, object : ServiceCallback<SignInResponse> {
                 override fun onSuccess(response: SignInResponse) {
-                    _signInResponse.postValue(response)
+                    _signInResponse.postValue(Event(response))
                 }
 
                 override fun onError(error: CallbackError) {

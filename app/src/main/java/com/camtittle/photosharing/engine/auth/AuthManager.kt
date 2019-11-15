@@ -1,9 +1,8 @@
 package com.camtittle.photosharing.engine.auth
 
+import android.content.Context
 import android.util.Log
-import com.amazonaws.mobile.client.AWSMobileClient
-import com.amazonaws.mobile.client.Callback
-import com.amazonaws.mobile.client.UserState
+import com.amazonaws.mobile.client.*
 import com.amazonaws.mobile.client.results.SignInResult
 import com.amazonaws.mobile.client.results.SignInState
 import com.amazonaws.mobile.client.results.SignUpResult
@@ -17,6 +16,20 @@ import java.lang.Exception
 object AuthManager {
 
     private val instance: AWSMobileClient = AWSMobileClient.getInstance()
+
+    private val tag = AuthManager::class.java.name
+
+    fun init(context: Context) {
+        AWSMobileClient.getInstance().initialize(context, object : Callback<UserStateDetails?> {
+            override fun onResult(result: UserStateDetails?) {
+                Log.d("AWSINIT", "onResult: " + result?.userState)
+            }
+
+            override fun onError(e: Exception?) {
+                Log.e("AWSINIT", "onError: ", e)
+            }
+        })
+    }
 
     fun signUp(email: String, password: String, callback: ServiceCallback<SignUpResponse>) {
         // We are using email as username here, but also add email as a user attribute
@@ -65,6 +78,7 @@ object AuthManager {
     }
 
     fun isSignedIn(): Boolean {
+        Log.d(tag, "IsSignedin")
         return instance.currentUserState().userState == UserState.SIGNED_IN
     }
 
@@ -81,9 +95,12 @@ object AuthManager {
             override fun onError(e: Exception?) {
                 callback.onError(CallbackError(e?.message, e))
             }
-
         })
+    }
 
+    fun signOut() {
+        Log.d(tag, "signOut")
+        instance.signOut()
     }
 
 }
