@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/feedFragment"
         android:name="com.camtittle.photosharing.ui.feed.FeedFragment"
-        android:label="feed_fragment"
+        android:label="My Feed"
         tools:layout="@layout/feed_fragment" />
     <navigation
         android:id="@+id/auth_navigation"
@@ -16,7 +16,7 @@
         <fragment
             android:id="@+id/signInFragment"
             android:name="com.camtittle.photosharing.ui.auth.signin.SignInFragment"
-            android:label="sign_in_fragment"
+            android:label="Sign in"
             tools:layout="@layout/sign_in_fragment">
             <action
                 android:id="@+id/action_signInFragment_to_signUpFragment"
@@ -35,7 +35,7 @@
         <fragment
             android:id="@+id/signUpFragment"
             android:name="com.camtittle.photosharing.ui.auth.signup.SignUpFragment"
-            android:label="SignUpFragment"
+            android:label="Sign Up"
             tools:layout="@layout/sign_up_fragment">
             <action
                 android:id="@+id/action_signUpFragment_to_unconfirmedAccountFragment"
@@ -51,7 +51,7 @@
         <fragment
             android:id="@+id/unconfirmedAccountFragment"
             android:name="com.camtittle.photosharing.ui.auth.unconfirmed.UnconfirmedAccountFragment"
-            android:label="UnconfirmedAccountFragment"
+            android:label="Confirm Account"
             tools:layout="@layout/unconfirmed_account_fragment">
             <action
                 android:id="@+id/action_unconfirmedAccountFragment_to_feedFragment"
@@ -65,6 +65,20 @@
     <action
         android:id="@+id/action_global_auth_navigation"
         app:destination="@id/auth_navigation"
+        app:enterAnim="@anim/slide_in_left"
+        app:exitAnim="@anim/slide_out_left" />
+    <navigation
+        android:id="@+id/create_post_navigation"
+        app:startDestination="@id/createPost" >
+        <fragment
+            android:id="@+id/createPost"
+            android:name="com.camtittle.photosharing.ui.createpost.CreatePost"
+            android:label="New post"
+            tools:layout="@layout/create_post_fragment" />
+    </navigation>
+    <action
+        android:id="@+id/action_global_create_post_navigation"
+        app:destination="@id/create_post_navigation"
         app:enterAnim="@anim/slide_in_left"
         app:exitAnim="@anim/slide_out_left" />
 </navigation>

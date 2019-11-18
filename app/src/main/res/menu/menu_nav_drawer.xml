@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@id/create_post_navigation"
+        android:title="Create post" />
+
+    <item
         android:id="@+id/sign_out"
         android:title="Sign out" />
 </menu>
