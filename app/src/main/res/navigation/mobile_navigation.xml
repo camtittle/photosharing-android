@@ -72,7 +72,7 @@
         app:startDestination="@id/createPost" >
         <fragment
             android:id="@+id/createPost"
-            android:name="com.camtittle.photosharing.ui.createpost.CreatePost"
+            android:name="com.camtittle.photosharing.ui.createpost.capturephoto.CapturePhotoFragment"
             android:label="New post"
             tools:layout="@layout/create_post_fragment" />
     </navigation>

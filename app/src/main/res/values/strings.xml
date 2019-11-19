@@ -15,5 +15,10 @@
     <string name="signin_cta_label">Sign in</string>
     <string name="signin_signup_cta_label">Sign up</string>
     <string name="sign_out_label">Sign out</string>
-    <string name="open_camera_label">Take a photo...</string>
+    <string name="open_camera_label">Take a photo…</string>
+    <string name="no_camera_error">Could not find a camera on this device</string>
+    <string name="capture_error">Something went wrong - could not capture photo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
