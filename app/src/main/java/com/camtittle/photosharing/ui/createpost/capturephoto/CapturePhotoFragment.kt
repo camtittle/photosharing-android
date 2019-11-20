@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.navigation.fragment.findNavController
 
 import com.camtittle.photosharing.R
 import com.camtittle.photosharing.databinding.CreatePostFragmentBinding
@@ -45,7 +46,11 @@ class CapturePhotoFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CreatePostViewModel::class.java)
+
+        activity?.also {
+            viewModel = ViewModelProviders.of(it).get(CreatePostViewModel::class.java)
+        }
+
         addSelectPhotoButtonListener()
     }
 
@@ -109,8 +114,13 @@ class CapturePhotoFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            showSavedFileInImageView()
+            navigateToEditDetailsFragment()
         }
+    }
+
+    private fun navigateToEditDetailsFragment() {
+        val action = CapturePhotoFragmentDirections.actionCreatePostToEditPostDetailsFragment()
+        findNavController().navigate(action)
     }
 
     @Throws(IOException::class)
@@ -128,14 +138,5 @@ class CapturePhotoFragment : Fragment() {
         }
 
     }
-
-    private fun showSavedFileInImageView() {
-        File(viewModel.currentPhotoPath).also {
-            if (it.exists()) {
-                binding.cameraIcon.setImageURI(Uri.fromFile(it))
-            }
-        }
-    }
-
 
 }

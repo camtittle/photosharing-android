@@ -74,7 +74,16 @@
             android:id="@+id/createPost"
             android:name="com.camtittle.photosharing.ui.createpost.capturephoto.CapturePhotoFragment"
             android:label="New post"
-            tools:layout="@layout/create_post_fragment" />
+            tools:layout="@layout/create_post_fragment" >
+            <action
+                android:id="@+id/action_createPost_to_editPostDetailsFragment"
+                app:destination="@id/editPostDetailsFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/editPostDetailsFragment"
+            android:name="com.camtittle.photosharing.ui.createpost.editpostdetails.EditPostDetailsFragment"
+            android:label="Edit Post"
+            tools:layout="@layout/fragment_edit_post_details" />
     </navigation>
     <action
         android:id="@+id/action_global_create_post_navigation"
