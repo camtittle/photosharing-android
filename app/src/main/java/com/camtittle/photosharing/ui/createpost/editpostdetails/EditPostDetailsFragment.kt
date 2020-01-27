@@ -11,11 +11,20 @@ import androidx.navigation.fragment.findNavController
 import com.camtittle.photosharing.databinding.EditPostDetailsFragmentBinding
 import com.camtittle.photosharing.ui.createpost.CreatePostViewModel
 import java.io.File
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import android.R.attr.bitmap
+import android.widget.Toast
+import com.camtittle.photosharing.engine.image.ImageUtils
+import java.io.FileNotFoundException
+
 
 class EditPostDetailsFragment : Fragment() {
 
     private lateinit var viewModel: CreatePostViewModel
     private lateinit var binding: EditPostDetailsFragmentBinding
+
+    private val maxImageSizePx = 1500
 
     companion object {
         fun newInstance() = EditPostDetailsFragment()
@@ -51,10 +60,33 @@ class EditPostDetailsFragment : Fragment() {
     }
 
     private fun showSavedFileInImageView() {
-        File(viewModel.currentPhotoPath).also {
-            if (it.exists()) {
-                binding.photoPreview.setImageURI(Uri.fromFile(it))
+        getSavedBitmap()?.also {
+            scaleBitmap(it).also { scaledBitmap ->
+                Toast.makeText(context, "${scaledBitmap.width} x ${scaledBitmap.height}", Toast.LENGTH_LONG).show()
+                binding.photoPreview.setImageBitmap(scaledBitmap)
             }
+        }
+
+    }
+
+    private fun getSavedBitmap(): Bitmap? {
+        if (!viewModel.currentPhotoPath.isBlank()) {
+            return try {
+                BitmapFactory.decodeFile(viewModel.currentPhotoPath)
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+                null
+            }
+        }
+
+        return null
+    }
+
+    private fun scaleBitmap(bm: Bitmap): Bitmap {
+        return if (bm.width > maxImageSizePx || bm.height > maxImageSizePx) {
+            ImageUtils.scaleBitmapToMaxSize(bm, maxImageSizePx)
+        } else {
+            bm
         }
     }
 

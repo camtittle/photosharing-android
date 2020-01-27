@@ -32,7 +32,6 @@ class FeedFragment : Fragment() {
     }
 
     private fun ensureAuthorised() {
-        Log.d(tag, "Ensure authorised")
         if (!viewModel.isSignedIn()) {
             val action = FeedFragmentDirections.actionGlobalAuthNavigation()
             findNavController().navigate(action)

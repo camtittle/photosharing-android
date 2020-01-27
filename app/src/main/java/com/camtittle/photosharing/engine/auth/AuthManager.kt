@@ -12,6 +12,8 @@ import com.camtittle.photosharing.engine.auth.model.SignUpResponse
 import com.camtittle.photosharing.engine.common.async.CallbackError
 import com.camtittle.photosharing.engine.common.async.ServiceCallback
 import java.lang.Exception
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amazonaws.mobile.client.UserStateDetails
 
 object AuthManager {
 
@@ -20,7 +22,7 @@ object AuthManager {
     private val tag = AuthManager::class.java.name
 
     fun init(context: Context) {
-        AWSMobileClient.getInstance().initialize(context, object : Callback<UserStateDetails?> {
+        instance.initialize(context, object : Callback<UserStateDetails?> {
             override fun onResult(result: UserStateDetails?) {
                 Log.d("AWSINIT", "onResult: " + result?.userState)
             }
@@ -36,7 +38,6 @@ object AuthManager {
         // in case other forms of username are used in the future
         val attributes = HashMap<String, String>()
         attributes["email"] = email
-        Log.d("SignUpViewModel", password)
         instance.signUp(email, password, attributes, null, object : Callback<SignUpResult> {
 
             override fun onResult(result: SignUpResult?) {
@@ -78,7 +79,6 @@ object AuthManager {
     }
 
     fun isSignedIn(): Boolean {
-        Log.d(tag, "IsSignedin")
         return instance.currentUserState().userState == UserState.SIGNED_IN
     }
 
@@ -86,6 +86,7 @@ object AuthManager {
         instance.signIn(username, password, null, object : Callback<SignInResult> {
             override fun onResult(result: SignInResult?) {
                 if (result?.signInState == SignInState.DONE) {
+                    Log.d(tag, instance.tokens.idToken.tokenString)
                     callback.onSuccess(SignInResponse())
                 } else {
                     callback.onError(CallbackError("Sign In state was not 'DONE'"))
