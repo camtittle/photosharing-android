@@ -14,6 +14,7 @@ import java.io.File
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import android.R.attr.bitmap
+import android.util.Log
 import android.widget.Toast
 import com.camtittle.photosharing.engine.image.ImageUtils
 import java.io.FileNotFoundException
@@ -64,6 +65,11 @@ class EditPostDetailsFragment : Fragment() {
             scaleBitmap(it).also { scaledBitmap ->
                 Toast.makeText(context, "${scaledBitmap.width} x ${scaledBitmap.height}", Toast.LENGTH_LONG).show()
                 binding.photoPreview.setImageBitmap(scaledBitmap)
+
+                ImageUtils.compressBitmapToJpeg(scaledBitmap).also { jpeg ->
+                    val b64 = ImageUtils.getBase64(jpeg)
+                    Log.d("EditPostDetails", "" + b64.length)
+                }
             }
         }
 
