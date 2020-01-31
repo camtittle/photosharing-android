@@ -7,9 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 
 import com.camtittle.photosharing.R
+import com.camtittle.photosharing.databinding.FeedFragmentBinding
 
 class FeedFragment : Fragment() {
 
@@ -21,14 +23,21 @@ class FeedFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.feed_fragment, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FeedViewModel::class.java)
 
         ensureAuthorised()
+
+        val binding = FeedFragmentBinding.inflate(inflater, container, false)
+        context ?: return binding.root
+
+        val adapter = PostListAdapter()
+        binding.feedFragmentRecyclerView.adapter = adapter
+
+        observePosts(binding, adapter)
+
+        refreshPosts()
+
+        return binding.root
     }
 
     private fun ensureAuthorised() {
@@ -36,6 +45,18 @@ class FeedFragment : Fragment() {
             val action = FeedFragmentDirections.actionGlobalAuthNavigation()
             findNavController().navigate(action)
         }
+    }
+
+    private fun refreshPosts() {
+        viewModel.updatePostsList()
+    }
+
+    private fun observePosts(binding: FeedFragmentBinding, adapter: PostListAdapter) {
+        viewModel.posts.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                adapter.submitList(it)
+            }
+        })
     }
 
 }

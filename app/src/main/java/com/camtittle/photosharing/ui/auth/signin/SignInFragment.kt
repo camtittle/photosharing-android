@@ -14,6 +14,7 @@ import com.camtittle.photosharing.databinding.SignInFragmentBinding
 import com.camtittle.photosharing.engine.common.result.EventObserver
 import com.camtittle.photosharing.ui.auth.AuthViewModel
 import android.view.inputmethod.InputMethodManager
+import com.camtittle.photosharing.ui.KeyboardUtils
 
 
 class SignInFragment : Fragment() {
@@ -37,6 +38,8 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProviders.of(activity!!).get(AuthViewModel::class.java)
         binding.model = viewModel
+
+        setHasOptionsMenu(false)
 
         addSignUpButtonClickListener()
         addSignInButtonClickListener()
@@ -75,14 +78,7 @@ class SignInFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
-        activity?.also {activity ->
-            (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).also {imm ->
-                imm.hideSoftInputFromWindow(
-                    activity.currentFocus?.windowToken,
-                    InputMethodManager.HIDE_NOT_ALWAYS
-                )
-            }
-        }
+        KeyboardUtils.hide(activity)
     }
 
 }

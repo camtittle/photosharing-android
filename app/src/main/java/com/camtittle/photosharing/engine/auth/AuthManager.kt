@@ -21,16 +21,38 @@ object AuthManager {
 
     private val tag = AuthManager::class.java.name
 
+    private var signOutListener: () -> Unit = {}
+
     fun init(context: Context) {
         instance.initialize(context, object : Callback<UserStateDetails?> {
             override fun onResult(result: UserStateDetails?) {
-                Log.d("AWSINIT", "onResult: " + result?.userState)
+
+                if (result?.userState != UserState.SIGNED_IN) {
+                    signOutListener()
+                } else {
+                    // Sometimes AWS SDK returns SignedIn state even when tokens are invalid
+                    try {
+                        val token = instance.tokens.idToken.tokenString
+                    } catch (e: Exception) {
+                        // If no token available, go to signIn
+                        signOutListener()
+                    }
+                }
             }
 
             override fun onError(e: Exception?) {
                 Log.e("AWSINIT", "onError: ", e)
             }
         })
+
+        instance.addUserStateListener {
+            instance.currentUserState().userState.let {
+                if (it != UserState.SIGNED_IN) {
+                    signOutListener()
+                }
+            }
+
+        }
     }
 
     fun signUp(email: String, password: String, callback: ServiceCallback<SignUpResponse>) {
@@ -79,7 +101,9 @@ object AuthManager {
     }
 
     fun isSignedIn(): Boolean {
-        return instance.currentUserState().userState == UserState.SIGNED_IN
+        val state = instance.currentUserState().userState == UserState.SIGNED_IN
+        Log.d(tag, "isSignedIn: $state")
+        return state
     }
 
     fun signIn(username: String, password: String, callback: ServiceCallback<SignInResponse>) {
@@ -102,6 +126,14 @@ object AuthManager {
     fun signOut() {
         Log.d(tag, "signOut")
         instance.signOut()
+    }
+
+    fun getIdToken(): String {
+        return instance.tokens.idToken.tokenString
+    }
+
+    fun setSignOutListener(listener: () -> Unit) {
+        signOutListener = listener
     }
 
 }

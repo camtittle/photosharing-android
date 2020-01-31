@@ -84,6 +84,11 @@
             android:name="com.camtittle.photosharing.ui.createpost.editpostdetails.EditPostDetailsFragment"
             android:label="Edit Post"
             tools:layout="@layout/fragment_edit_post_details" />
+        <action
+            android:id="@+id/action_global_feedFragment"
+            app:destination="@id/feedFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left" />
     </navigation>
     <action
         android:id="@+id/action_global_create_post_navigation"

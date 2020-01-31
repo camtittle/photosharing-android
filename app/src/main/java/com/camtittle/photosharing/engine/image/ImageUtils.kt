@@ -10,6 +10,8 @@ import java.util.Base64.getEncoder
 
 object ImageUtils {
 
+    private const val jpegPrefix = "data:image/jpeg;base64,"
+
     // adapted from
     // https://stackoverflow.com/questions/4837715/how-to-resize-a-bitmap-in-android
     fun scaleBitmapToMaxSize(bm: Bitmap, maxSize: Int): Bitmap {
@@ -41,6 +43,6 @@ object ImageUtils {
     }
 
     fun getBase64(byteArray: ByteArray): String {
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+        return jpegPrefix + Base64.encodeToString(byteArray, Base64.NO_WRAP)
     }
 }

@@ -1,6 +1,5 @@
 package com.camtittle.photosharing.ui.createpost.editpostdetails
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +9,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.camtittle.photosharing.databinding.EditPostDetailsFragmentBinding
 import com.camtittle.photosharing.ui.createpost.CreatePostViewModel
-import java.io.File
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
-import android.R.attr.bitmap
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.camtittle.photosharing.engine.image.ImageUtils
+import com.camtittle.photosharing.ui.KeyboardUtils
 import java.io.FileNotFoundException
 
 
@@ -42,6 +41,10 @@ class EditPostDetailsFragment : Fragment() {
 
         activity?.also {
             viewModel = ViewModelProviders.of(it).get(CreatePostViewModel::class.java)
+            binding.viewModel = viewModel
+
+            observeCreationResult()
+            addSubmitButtonClickListener()
         }
     }
 
@@ -65,11 +68,10 @@ class EditPostDetailsFragment : Fragment() {
             scaleBitmap(it).also { scaledBitmap ->
                 Toast.makeText(context, "${scaledBitmap.width} x ${scaledBitmap.height}", Toast.LENGTH_LONG).show()
                 binding.photoPreview.setImageBitmap(scaledBitmap)
+                viewModel.imageBitmap = scaledBitmap
 
-                ImageUtils.compressBitmapToJpeg(scaledBitmap).also { jpeg ->
-                    val b64 = ImageUtils.getBase64(jpeg)
-                    Log.d("EditPostDetails", "" + b64.length)
-                }
+                val b64 = ImageUtils.getBase64(ImageUtils.compressBitmapToJpeg(scaledBitmap))
+                Log.d("EditPost", b64.substring(0, 1000))
             }
         }
 
@@ -94,6 +96,30 @@ class EditPostDetailsFragment : Fragment() {
         } else {
             bm
         }
+    }
+
+    private fun addSubmitButtonClickListener() {
+        binding.createPostSubmitButton.setOnClickListener {
+            Log.d(tag, "SubmitPost click")
+            KeyboardUtils.hide(activity)
+            viewModel.submitPost()
+        }
+    }
+
+    private fun observeCreationResult() {
+        viewModel.creationResult.observe(viewLifecycleOwner, Observer {
+            if (it == null) {
+                Toast.makeText(context, "Error creating post", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(context, "Created post with ID ${it.id} successfully", Toast.LENGTH_LONG).show()
+                navigateToFeed()
+            }
+        })
+    }
+
+    private fun navigateToFeed() {
+        val action = EditPostDetailsFragmentDirections.actionGlobalFeedFragment()
+        findNavController().navigate(action)
     }
 
 }
