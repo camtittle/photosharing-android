@@ -12,6 +12,9 @@
         android:id="@+id/feed_fragment_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:context=".ui.feed.FeedFragment"
         tools:listitem="@layout/post_list_item">
