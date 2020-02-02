@@ -6,8 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.Observer
 
 import com.camtittle.photosharing.R
+import com.camtittle.photosharing.databinding.SinglePostFragmentBinding
+import com.camtittle.photosharing.engine.common.result.Result
+import com.camtittle.photosharing.engine.data.network.model.Post
+import com.camtittle.photosharing.engine.data.network.model.PostType
+import com.squareup.picasso.Picasso
 
 class SinglePostFragment : Fragment() {
 
@@ -16,17 +23,44 @@ class SinglePostFragment : Fragment() {
     }
 
     private lateinit var viewModel: SinglePostViewModel
+    private lateinit var binding: SinglePostFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.single_post_fragment, container, false)
+        binding = SinglePostFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         viewModel = ViewModelProviders.of(this).get(SinglePostViewModel::class.java)
+        binding.model = viewModel
+        observePost()
+        viewModel.postId = arguments?.getString("postId") ?: ""
+        viewModel.refresh()
+
     }
 
+    private fun observePost() {
+        viewModel.post.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Result.Status.LOADING ->
+                    Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
+                Result.Status.SUCCESS ->
+                    bindPost(it.data)
+                Result.Status.ERROR ->
+                    Toast.makeText(context, "Error fetching post: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun bindPost(post: Post?) {
+        binding.singlePostItemCore.model = post
+        if (post?.imageUrl != null) {
+            Picasso.get().load(post.imageUrl).into(binding.singlePostItemCore.postListItemImage)
+        }
+    }
 }

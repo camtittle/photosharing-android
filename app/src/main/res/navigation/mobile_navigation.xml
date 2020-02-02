@@ -106,7 +106,7 @@
     <fragment
         android:id="@+id/singlePostFragment"
         android:name="com.camtittle.photosharing.ui.singlepost.SinglePostFragment"
-        android:label="SinglePostFragment" >
+        android:label="Post">
         <argument
             android:name="postId"
             app:argType="string" />
