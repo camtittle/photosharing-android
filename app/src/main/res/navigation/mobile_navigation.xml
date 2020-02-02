@@ -9,7 +9,15 @@
         android:id="@+id/feedFragment"
         android:name="com.camtittle.photosharing.ui.feed.FeedFragment"
         android:label="My Feed"
-        tools:layout="@layout/feed_fragment" />
+        tools:layout="@layout/feed_fragment" >
+        <action
+            android:id="@+id/action_feedFragment_to_singlePostFragment"
+            app:destination="@id/singlePostFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
     <navigation
         android:id="@+id/auth_navigation"
         app:startDestination="@id/signInFragment" >
@@ -95,4 +103,12 @@
         app:destination="@id/create_post_navigation"
         app:enterAnim="@anim/slide_in_left"
         app:exitAnim="@anim/slide_out_left" />
+    <fragment
+        android:id="@+id/singlePostFragment"
+        android:name="com.camtittle.photosharing.ui.singlepost.SinglePostFragment"
+        android:label="SinglePostFragment" >
+        <argument
+            android:name="postId"
+            app:argType="string" />
+    </fragment>
 </navigation>

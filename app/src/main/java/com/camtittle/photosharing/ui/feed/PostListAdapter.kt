@@ -1,7 +1,9 @@
 package com.camtittle.photosharing.ui.feed
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +16,7 @@ class PostListAdapter : ListAdapter<Post, PostListAdapter.ViewHolder>(DiffCallba
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = getItem(position)
         holder.apply {
-            bind(post)
+            bind(createOnClickListener(post.id), post)
             loadImg(post)
             itemView.tag = post
         }
@@ -26,17 +28,25 @@ class PostListAdapter : ListAdapter<Post, PostListAdapter.ViewHolder>(DiffCallba
             LayoutInflater.from(parent.context), parent, false))
     }
 
+    private fun createOnClickListener(postId: String): View.OnClickListener {
+        return View.OnClickListener {
+            val action = FeedFragmentDirections.actionFeedFragmentToSinglePostFragment(postId)
+            it.findNavController().navigate(action)
+        }
+    }
+
     class ViewHolder(
         private val binding: PostListItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Post) {
+        fun bind(onClickListener: View.OnClickListener, item: Post) {
             binding.model = item
+            binding.onClickListener = onClickListener
         }
 
         fun loadImg(item: Post) {
             if (!item.imageUrl.isNullOrBlank()) {
-                Picasso.get().load(item.imageUrl).into(binding.postListItemImage)
+                Picasso.get().load(item.imageUrl).into(binding.postListItemCore.postListItemImage)
             }
         }
     }

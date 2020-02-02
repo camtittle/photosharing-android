@@ -23,4 +23,5 @@
     <string name="create_post_description_hint">Add a description...</string>
     <string name="create_post_submit_label">Post</string>
     <string name="comment_count_label">%s comments</string>
+    <string name="add_comment_hint">Add a comment</string>
 </resources>
