@@ -2,6 +2,7 @@ package com.camtittle.photosharing.ui.singlepost
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +11,10 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 
 import com.camtittle.photosharing.R
+import com.camtittle.photosharing.databinding.CommentListItemBinding
 import com.camtittle.photosharing.databinding.SinglePostFragmentBinding
 import com.camtittle.photosharing.engine.common.result.Result
+import com.camtittle.photosharing.engine.data.network.model.Comment
 import com.camtittle.photosharing.engine.data.network.model.Post
 import com.camtittle.photosharing.engine.data.network.model.PostType
 import com.squareup.picasso.Picasso
@@ -38,10 +41,20 @@ class SinglePostFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(this).get(SinglePostViewModel::class.java)
         binding.model = viewModel
+
         observePost()
+        setupCommentsRecyclerView()
+
         viewModel.postId = arguments?.getString("postId") ?: ""
         viewModel.refresh()
 
+    }
+
+    private fun setupCommentsRecyclerView() {
+        val commentsAdapter = CommentListAdapter()
+        binding.commentsRecyclerView.adapter = commentsAdapter
+
+        observeComments(commentsAdapter)
     }
 
     private fun observePost() {
@@ -53,6 +66,21 @@ class SinglePostFragment : Fragment() {
                     bindPost(it.data)
                 Result.Status.ERROR ->
                     Toast.makeText(context, "Error fetching post: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun observeComments(adapter: CommentListAdapter) {
+        viewModel.comments.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Result.Status.LOADING ->
+                    Toast.makeText(context, "Loading comments...", Toast.LENGTH_SHORT).show()
+                Result.Status.SUCCESS -> {
+                    Log.d("SinglePostFragment", it.toString())
+                    adapter.submitList(it.data)
+                }
+                Result.Status.ERROR ->
+                    Toast.makeText(context, "Error fetching comments: ${it.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }

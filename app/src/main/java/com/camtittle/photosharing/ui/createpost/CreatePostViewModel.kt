@@ -33,7 +33,7 @@ class CreatePostViewModel : ViewModel() {
         val token = AuthManager.getIdToken()
         Log.d(tag, "token: $token")
 
-        ApiService.postApi.createPost(token, request).enqueue(object : Callback<CreatedPost> {
+        ApiService.api.createPost(token, request).enqueue(object : Callback<CreatedPost> {
 
             override fun onResponse(call: Call<CreatedPost>, response: Response<CreatedPost>) {
                 Log.d(tag, "createPost Status code:" + response.message())

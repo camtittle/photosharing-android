@@ -33,7 +33,7 @@ class FeedFragment : Fragment() {
         val adapter = PostListAdapter()
         binding.feedFragmentRecyclerView.adapter = adapter
 
-        observePosts(binding, adapter)
+        observePosts(adapter)
 
         refreshPosts()
 
@@ -51,7 +51,7 @@ class FeedFragment : Fragment() {
         viewModel.updatePostsList()
     }
 
-    private fun observePosts(binding: FeedFragmentBinding, adapter: PostListAdapter) {
+    private fun observePosts(adapter: PostListAdapter) {
         viewModel.posts.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 adapter.submitList(it)

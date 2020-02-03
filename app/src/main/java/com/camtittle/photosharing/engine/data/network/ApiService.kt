@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 
 object ApiService {
 
-    val postApi: PostApi
+    val api: PhotosharingApi
 
     // private const val baseUrl = "http://10.0.2.2:3000/"
     private const val baseUrl = "https://sh3pakf5e3.execute-api.eu-central-1.amazonaws.com/dev/"
@@ -16,7 +16,7 @@ object ApiService {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        postApi = retrofit.create(PostApi::class.java)
+        api = retrofit.create(PhotosharingApi::class.java)
     }
 
 }

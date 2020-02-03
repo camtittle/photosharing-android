@@ -33,6 +33,7 @@ object AuthManager {
                     // Sometimes AWS SDK returns SignedIn state even when tokens are invalid
                     try {
                         val token = instance.tokens.idToken.tokenString
+                        Log.d(tag, token)
                     } catch (e: Exception) {
                         // If no token available, go to signIn
                         signOutListener()

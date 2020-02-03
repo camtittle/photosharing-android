@@ -25,7 +25,7 @@ class FeedViewModel : ViewModel() {
 
     fun updatePostsList() {
         Log.d(tag, "updatePostsList")
-        ApiService.postApi.getPosts().enqueue(object : Callback<PostsList> {
+        ApiService.api.getPosts().enqueue(object : Callback<PostsList> {
 
             override fun onResponse(call: Call<PostsList>, response: Response<PostsList>) {
                 val posts = response.body()
