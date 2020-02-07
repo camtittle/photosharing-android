@@ -5,8 +5,12 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.camtittle.photosharing.engine.auth.AuthManager
+import com.camtittle.photosharing.engine.common.result.Event
 import com.camtittle.photosharing.engine.common.result.Result
 import com.camtittle.photosharing.engine.data.network.ApiService
+import com.camtittle.photosharing.engine.data.network.model.AddCommentRequest
+import com.camtittle.photosharing.engine.data.network.model.AddCommentResponse
 import com.camtittle.photosharing.engine.data.network.model.Comment
 import com.camtittle.photosharing.engine.data.network.model.Post
 import retrofit2.Call
@@ -16,13 +20,16 @@ import retrofit2.Response
 class SinglePostViewModel : ViewModel() {
 
     var commentText = ObservableField<String>()
-    var postId: String? = null
+    var postId: String = ""
 
     private val _post = MutableLiveData<Result<Post>>()
     val post: LiveData<Result<Post>> = _post
 
     private val _comments = MutableLiveData<Result<List<Comment>>>()
     val comments: LiveData<Result<List<Comment>>> = _comments
+
+    private val _submitComment = MutableLiveData<Result<AddCommentResponse>>()
+    val submitComment: LiveData<Result<AddCommentResponse>> = _submitComment
 
     private val TAG = SinglePostViewModel::class.java.name
 
@@ -81,6 +88,36 @@ class SinglePostViewModel : ViewModel() {
                 }
             }
         })
+    }
+
+    fun submitComment() {
+        Log.d(TAG, "Click comment submit")
+        val commentContent = commentText.get()
+        Log.d(TAG, "comment: $commentContent")
+        if (commentContent.isNullOrEmpty()) return
+
+        val post = _post.value?.data ?: return
+        val accessToken = AuthManager.getIdToken()
+        val request = AddCommentRequest(post.id, post.timestamp, commentContent)
+
+        Log.d(TAG, "Submitting comment: $commentContent")
+
+        ApiService.api.addComment(accessToken, request).enqueue(object : Callback<AddCommentResponse> {
+            override fun onFailure(call: Call<AddCommentResponse>, t: Throwable) {
+                Log.e(TAG, t.message ?: "Error submitting comment")
+                _submitComment.postValue(Result.error(t.message ?: "Error submitting comment"))
+            }
+
+            override fun onResponse(call: Call<AddCommentResponse>, response: Response<AddCommentResponse>) {
+                val value = response.body()?.let { Result.success(it) }
+                    ?: Result.error("Error submitting comment. Code: ${response.code()}")
+                _submitComment.postValue(value)
+            }
+        })
+    }
+
+    fun resetCommentForm() {
+        commentText.set("")
     }
 
 

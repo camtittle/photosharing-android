@@ -10,13 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 
-import com.camtittle.photosharing.R
-import com.camtittle.photosharing.databinding.CommentListItemBinding
 import com.camtittle.photosharing.databinding.SinglePostFragmentBinding
 import com.camtittle.photosharing.engine.common.result.Result
-import com.camtittle.photosharing.engine.data.network.model.Comment
 import com.camtittle.photosharing.engine.data.network.model.Post
-import com.camtittle.photosharing.engine.data.network.model.PostType
+import com.camtittle.photosharing.ui.KeyboardUtils
 import com.squareup.picasso.Picasso
 
 class SinglePostFragment : Fragment() {
@@ -27,6 +24,8 @@ class SinglePostFragment : Fragment() {
 
     private lateinit var viewModel: SinglePostViewModel
     private lateinit var binding: SinglePostFragmentBinding
+
+    private val TAG = SinglePostFragment::class.java.name
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +42,9 @@ class SinglePostFragment : Fragment() {
         binding.model = viewModel
 
         observePost()
+        observeSubmittedComment()
         setupCommentsRecyclerView()
+        setSubmitCommentClickLister()
 
         viewModel.postId = arguments?.getString("postId") ?: ""
         viewModel.refresh()
@@ -60,8 +61,8 @@ class SinglePostFragment : Fragment() {
     private fun observePost() {
         viewModel.post.observe(viewLifecycleOwner, Observer {
             when (it.status) {
-                Result.Status.LOADING ->
-                    Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
+//                Result.Status.LOADING ->
+//                    Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
                 Result.Status.SUCCESS ->
                     bindPost(it.data)
                 Result.Status.ERROR ->
@@ -73,8 +74,8 @@ class SinglePostFragment : Fragment() {
     private fun observeComments(adapter: CommentListAdapter) {
         viewModel.comments.observe(viewLifecycleOwner, Observer {
             when (it.status) {
-                Result.Status.LOADING ->
-                    Toast.makeText(context, "Loading comments...", Toast.LENGTH_SHORT).show()
+//                Result.Status.LOADING ->
+//                    Toast.makeText(context, "Loading comments...", Toast.LENGTH_SHORT).show()
                 Result.Status.SUCCESS -> {
                     Log.d("SinglePostFragment", it.toString())
                     adapter.submitList(it.data)
@@ -85,10 +86,36 @@ class SinglePostFragment : Fragment() {
         })
     }
 
+    private fun observeSubmittedComment() {
+        viewModel.submitComment.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "observed submitted comment response")
+            when (it.status) {
+                Result.Status.LOADING ->
+                    Toast.makeText(context, "Submitting comment..", Toast.LENGTH_SHORT).show()
+                Result.Status.SUCCESS -> onCommentSubmittedSuccessfully()
+                Result.Status.ERROR ->
+                    Toast.makeText(context, "Error submitting comment: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+    }
+
+    private fun onCommentSubmittedSuccessfully() {
+        viewModel.resetCommentForm()
+        KeyboardUtils.hide(activity)
+        viewModel.refresh()
+    }
+
     private fun bindPost(post: Post?) {
-        binding.singlePostItemCore.model = post
+        binding.post = post
         if (post?.imageUrl != null) {
             Picasso.get().load(post.imageUrl).into(binding.singlePostItemCore.postListItemImage)
+        }
+    }
+
+    private fun setSubmitCommentClickLister() {
+        binding.submitCommentButton.setOnClickListener {
+            viewModel.submitComment()
         }
     }
 }

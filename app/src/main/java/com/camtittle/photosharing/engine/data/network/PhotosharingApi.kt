@@ -19,4 +19,9 @@ interface PhotosharingApi {
     @GET("comments")
     fun getComments(@Query("postId") postId: String): Call<List<Comment>>
 
+
+    @POST("comments")
+    fun addComment(@Header("Authorization") token: String,
+                   @Body body: AddCommentRequest): Call<AddCommentResponse>
+
 }
