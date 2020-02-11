@@ -20,6 +20,13 @@ class AuthModel : BaseObservable() {
             notifyPropertyChanged(BR.password)
         }
 
+    var name: String = ""
+        @Bindable get
+        set(name) {
+            field = name
+            notifyPropertyChanged(BR.name)
+        }
+
     var confirmationCode: String = ""
         @Bindable get
         set(code) {
@@ -31,5 +38,6 @@ class AuthModel : BaseObservable() {
         email = ""
         password = ""
         confirmationCode = ""
+        name = ""
     }
 }

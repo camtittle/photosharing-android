@@ -59,7 +59,7 @@
                     tools:text="2 comments" />
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/postListItemDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"

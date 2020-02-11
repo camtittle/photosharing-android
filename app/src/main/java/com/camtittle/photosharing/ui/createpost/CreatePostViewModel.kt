@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.camtittle.photosharing.engine.auth.AuthManager
+import com.camtittle.photosharing.engine.common.result.Event
 import com.camtittle.photosharing.engine.data.network.ApiService
 import com.camtittle.photosharing.engine.data.network.model.CreateImagePostRequest
 import com.camtittle.photosharing.engine.data.network.model.CreatedPost
@@ -23,8 +24,8 @@ class CreatePostViewModel : ViewModel() {
 
     private val tag = CreatePostViewModel::class.java.name
 
-    private val _creationResult = MutableLiveData<CreatedPost>()
-    val creationResult: LiveData<CreatedPost> = _creationResult
+    private val _creationResult = MutableLiveData<Event<CreatedPost>>()
+    val creationResult: LiveData<Event<CreatedPost>> = _creationResult
 
     fun submitPost() {
         // todo handle error nicely
@@ -37,7 +38,8 @@ class CreatePostViewModel : ViewModel() {
 
             override fun onResponse(call: Call<CreatedPost>, response: Response<CreatedPost>) {
                 Log.d(tag, "createPost Status code:" + response.message())
-                _creationResult.postValue(response.body())
+                response.body()?.let { _creationResult.postValue(Event(it)) }
+                clearModel()
             }
 
             override fun onFailure(call: Call<CreatedPost>, t: Throwable) {
@@ -73,5 +75,9 @@ class CreatePostViewModel : ViewModel() {
                 b64
             }
         }
+    }
+
+    private fun clearModel() {
+        description.set("")
     }
 }

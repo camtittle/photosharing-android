@@ -14,6 +14,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import com.camtittle.photosharing.engine.common.result.EventObserver
 import com.camtittle.photosharing.engine.image.ImageUtils
 import com.camtittle.photosharing.ui.KeyboardUtils
 import java.io.FileNotFoundException
@@ -107,7 +108,7 @@ class EditPostDetailsFragment : Fragment() {
     }
 
     private fun observeCreationResult() {
-        viewModel.creationResult.observe(viewLifecycleOwner, Observer {
+        viewModel.creationResult.observe(viewLifecycleOwner, EventObserver {
             if (it == null) {
                 Toast.makeText(context, "Error creating post", Toast.LENGTH_LONG).show()
             } else {

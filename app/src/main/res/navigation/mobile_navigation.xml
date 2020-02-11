@@ -62,11 +62,24 @@
             android:label="Confirm Account"
             tools:layout="@layout/unconfirmed_account_fragment">
             <action
-                android:id="@+id/action_unconfirmedAccountFragment_to_feedFragment"
+                android:id="@+id/action_unconfirmedAccountFragment_to_editProfileFragment"
+                app:destination="@id/editProfileFragment"
+                app:enterAnim="@anim/slide_in_left"
+                app:exitAnim="@anim/slide_out_left"
+                app:popUpTo="@+id/editProfileFragment"
+                app:popUpToInclusive="true" />
+        </fragment>
+        <fragment
+            android:id="@+id/editProfileFragment"
+            android:name="com.camtittle.photosharing.ui.auth.profile.EditProfileFragment"
+            android:label="EditProfileFragment" >
+
+            <action
+                android:id="@+id/action_EditProfileFragment_to_feedFragment"
                 app:destination="@id/feedFragment"
                 app:enterAnim="@anim/slide_in_left"
                 app:exitAnim="@anim/slide_out_left"
-                app:popUpTo="@+id/signUpFragment"
+                app:popUpTo="@+id/feedFragment"
                 app:popUpToInclusive="true" />
         </fragment>
     </navigation>

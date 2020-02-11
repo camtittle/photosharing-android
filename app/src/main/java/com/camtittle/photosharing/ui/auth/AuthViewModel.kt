@@ -11,6 +11,11 @@ import com.camtittle.photosharing.engine.auth.model.SignUpResponse
 import com.camtittle.photosharing.engine.common.async.CallbackError
 import com.camtittle.photosharing.engine.common.async.ServiceCallback
 import com.camtittle.photosharing.engine.common.result.Event
+import com.camtittle.photosharing.engine.data.network.ApiService
+import com.camtittle.photosharing.engine.data.network.model.UpdateProfileRequest
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AuthViewModel : ViewModel() {
 
@@ -22,14 +27,15 @@ class AuthViewModel : ViewModel() {
     private val _signInResponse = MutableLiveData<Event<SignInResponse>>()
     val signInResponse: LiveData<Event<SignInResponse>> = _signInResponse
 
-    private val _confirmResponse = MutableLiveData<ConfirmResponse>()
-    val confirmResponse: LiveData<ConfirmResponse> = _confirmResponse
+    private val _saveProfileDetailsResponse = MutableLiveData<Event<Unit>>()
+    val saveProfileDetailsResponse: LiveData<Event<Unit>> = _saveProfileDetailsResponse
 
     val tag = AuthViewModel::class.java.name
 
     fun signUp() {
         val email = model.email
         val password = model.password
+        Log.d(tag, "Sign up clicked")
         if (email.isNotBlank() && password.isNotBlank()) {
             AuthManager.signUp(email, password, object : ServiceCallback<SignUpResponse> {
                 override fun onError(error: CallbackError) {
@@ -66,6 +72,27 @@ class AuthViewModel : ViewModel() {
                 }
             })
 
+        }
+    }
+
+    fun saveProfileDetails() {
+        val name = model.name
+        val token = AuthManager.getIdToken()
+        Log.d(tag, "Saving profile details with name: $name")
+        if (name.isNotEmpty()) {
+            val updateRequest = UpdateProfileRequest(name)
+            ApiService.api.updateProfile(token, updateRequest).enqueue(object : Callback<Void> {
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Log.e(tag, "Error saving profile details" + t.message   )
+                }
+
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    Log.d(tag, "Successfully saved profile details")
+                    _saveProfileDetailsResponse.postValue(Event(Unit))
+                    model.clear()
+                }
+
+            })
         }
     }
 

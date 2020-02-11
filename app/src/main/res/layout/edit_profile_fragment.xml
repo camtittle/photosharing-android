@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.signup.SignUpFragment">
+    tools:context=".ui.signup.EditProfileFragment">
 
     <data>
         <variable
@@ -32,35 +32,26 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:paddingBottom="40dp"
-                android:text="@string/signup_title"
+                android:text="@string/sign_up_profile_details"
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/signupEmail"
+                android:id="@+id/signupName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:ems="10"
-                android:hint="@string/email_input_label"
-                android:inputType="textEmailAddress"
-                android:paddingBottom="@dimen/defaultPadding"
-                android:text="@={model.model.email}" />
-
-            <EditText
-                android:id="@+id/signupPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/create_password_input_label"
-                android:inputType="textPassword"
+                android:hint="@string/signup_name_input_label"
+                android:inputType="textPersonName"
                 android:paddingTop="@dimen/defaultPadding"
-                android:text="@={model.model.password}" />
+                android:text="@={model.model.name}" />
 
             <Button
-                android:id="@+id/signUpSubmitButton"
+                android:id="@+id/editProfileSubmitButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/signup_cta_label" />
+                android:text="@string/sign_up_done" />
 
             <ProgressBar
                 android:id="@+id/progressBar2"
@@ -69,24 +60,6 @@
                 android:layout_height="wrap_content"
                 android:background="#008D2424"
                 android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/existingAccountPrompt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:paddingTop="@dimen/defaultPadding"
-                android:text="@string/signup_signin_hint" />
-
-            <TextView
-                android:id="@+id/signUpSignInButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_horizontal"
-                android:text="@string/signup_signin_cta_label"
-                android:textColor="#673AB7" />
 
 
         </LinearLayout>
