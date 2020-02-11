@@ -1,7 +1,4 @@
 package com.camtittle.photosharing.engine.data.network.model
 
-class PostsList {
-
-    var posts: List<Post>? = null
-
-}
+data class UpdateProfileRequest(
+    val name: String)

@@ -6,13 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.camtittle.photosharing.engine.auth.AuthManager
-import com.camtittle.photosharing.engine.common.result.Event
 import com.camtittle.photosharing.engine.common.result.Result
 import com.camtittle.photosharing.engine.data.network.ApiService
-import com.camtittle.photosharing.engine.data.network.model.AddCommentRequest
-import com.camtittle.photosharing.engine.data.network.model.AddCommentResponse
-import com.camtittle.photosharing.engine.data.network.model.Comment
-import com.camtittle.photosharing.engine.data.network.model.Post
+import com.camtittle.photosharing.engine.data.network.model.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,8 +18,8 @@ class SinglePostViewModel : ViewModel() {
     var commentText = ObservableField<String>()
     var postId: String = ""
 
-    private val _post = MutableLiveData<Result<Post>>()
-    val post: LiveData<Result<Post>> = _post
+    private val _post = MutableLiveData<Result<SinglePost>>()
+    val post: LiveData<Result<SinglePost>> = _post
 
     private val _comments = MutableLiveData<Result<List<Comment>>>()
     val comments: LiveData<Result<List<Comment>>> = _comments
@@ -34,7 +30,7 @@ class SinglePostViewModel : ViewModel() {
     private val TAG = SinglePostViewModel::class.java.name
 
     fun refresh() {
-        postId?.let {postId ->
+        postId.let {postId ->
             if (postId.isEmpty()) {
                 return
             }
@@ -48,13 +44,13 @@ class SinglePostViewModel : ViewModel() {
         // Emit a loading result
         _post.postValue(Result.loading())
 
-        ApiService.api.getPost(postId).enqueue(object : Callback<Post?> {
-            override fun onFailure(call: Call<Post?>, t: Throwable) {
+        ApiService.api.getPost(postId).enqueue(object : Callback<SinglePost?> {
+            override fun onFailure(call: Call<SinglePost?>, t: Throwable) {
                 Log.e(TAG, "Failed to fetch post with id $postId")
                 _post.postValue(Result.error(t.message ?: "Error fetching post"))
             }
 
-            override fun onResponse(call: Call<Post?>, response: Response<Post?>) {
+            override fun onResponse(call: Call<SinglePost?>, response: Response<SinglePost?>) {
                 response.body().let {
                     if (it == null) {
                         _post.postValue(Result.error("Error fetching post. Status code: ${response.code()}"))

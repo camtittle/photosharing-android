@@ -52,7 +52,7 @@ class FeedFragment : Fragment() {
     }
 
     private fun observePosts(adapter: PostListAdapter) {
-        viewModel.posts.observe(viewLifecycleOwner, Observer {
+        viewModel.feedItems.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 adapter.submitList(it)
             }

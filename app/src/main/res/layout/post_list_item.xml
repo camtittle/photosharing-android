@@ -7,7 +7,7 @@
     <data>
         <variable
             name="model"
-            type="com.camtittle.photosharing.engine.data.network.model.Post" />
+            type="com.camtittle.photosharing.ui.feed.FeedItemContainer" />
         <variable
             name="onClickListener"
             type="android.view.View.OnClickListener" />
@@ -35,22 +35,39 @@
                 android:id="@+id/post_list_item_core"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                bind:model="@{model}"/>
+                bind:post="@{model.post}"
+                bind:profile="@{model.profile}"/>
 
-            <TextView
-                android:id="@+id/postListItemCommentCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:text="@{@string/comment_count_label(model.commentCount)}"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/postListItemDescription"
-                tools:text="2 comments" />
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/postListItemCommentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/comment_count_label(model.post.commentCount)}"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/postListItemDescription"
+                    tools:text="2 comments" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@{model.post.formattedDate}"
+                    android:textSize="12sp"
+                    tools:text="12 Dec 2020 15:45" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

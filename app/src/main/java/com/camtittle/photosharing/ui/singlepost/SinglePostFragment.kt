@@ -12,8 +12,10 @@ import androidx.lifecycle.Observer
 
 import com.camtittle.photosharing.databinding.SinglePostFragmentBinding
 import com.camtittle.photosharing.engine.common.result.Result
-import com.camtittle.photosharing.engine.data.network.model.Post
+import com.camtittle.photosharing.engine.data.network.model.FeedPost
+import com.camtittle.photosharing.engine.data.network.model.SinglePost
 import com.camtittle.photosharing.ui.KeyboardUtils
+import com.camtittle.photosharing.ui.shared.CorePostModel
 import com.squareup.picasso.Picasso
 
 class SinglePostFragment : Fragment() {
@@ -64,7 +66,7 @@ class SinglePostFragment : Fragment() {
 //                Result.Status.LOADING ->
 //                    Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
                 Result.Status.SUCCESS ->
-                    bindPost(it.data)
+                    it.data?.let { data -> bindPost(data) }
                 Result.Status.ERROR ->
                     Toast.makeText(context, "Error fetching post: ${it.message}", Toast.LENGTH_SHORT).show()
             }
@@ -106,9 +108,9 @@ class SinglePostFragment : Fragment() {
         viewModel.refresh()
     }
 
-    private fun bindPost(post: Post?) {
-        binding.post = post
-        if (post?.imageUrl != null) {
+    private fun bindPost(post: SinglePost) {
+        binding.post = CorePostModel.fromSinglePost(post)
+        if (post.imageUrl != null) {
             Picasso.get().load(post.imageUrl).into(binding.singlePostItemCore.postListItemImage)
         }
     }

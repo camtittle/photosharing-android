@@ -8,17 +8,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.camtittle.photosharing.databinding.PostListItemBinding
-import com.camtittle.photosharing.engine.data.network.model.Post
+import com.camtittle.photosharing.ui.shared.CorePostModel
 import com.squareup.picasso.Picasso
 
-class PostListAdapter : ListAdapter<Post, PostListAdapter.ViewHolder>(DiffCallback()) {
+class PostListAdapter : ListAdapter<FeedItemContainer, PostListAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val post = getItem(position)
+        val feedItem = getItem(position)
         holder.apply {
-            bind(createOnClickListener(post.id), post)
-            loadImg(post)
-            itemView.tag = post
+            bind(createOnClickListener(feedItem.post.id), feedItem)
+            loadImg(feedItem.post)
+            itemView.tag = feedItem
         }
 
     }
@@ -39,12 +39,12 @@ class PostListAdapter : ListAdapter<Post, PostListAdapter.ViewHolder>(DiffCallba
         private val binding: PostListItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(onClickListener: View.OnClickListener, item: Post) {
+        fun bind(onClickListener: View.OnClickListener, item: FeedItemContainer) {
             binding.model = item
             binding.onClickListener = onClickListener
         }
 
-        fun loadImg(item: Post) {
+        fun loadImg(item: CorePostModel) {
             if (!item.imageUrl.isNullOrBlank()) {
                 Picasso.get().load(item.imageUrl).into(binding.postListItemCore.postListItemImage)
             }
@@ -53,13 +53,13 @@ class PostListAdapter : ListAdapter<Post, PostListAdapter.ViewHolder>(DiffCallba
 
 }
 
-private class DiffCallback : DiffUtil.ItemCallback<Post>() {
-    override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem.id == newItem.id
+private class DiffCallback : DiffUtil.ItemCallback<FeedItemContainer>() {
+    override fun areContentsTheSame(oldItem: FeedItemContainer, newItem: FeedItemContainer): Boolean {
+        return oldItem.post.id == newItem.post.id && oldItem.profile == newItem.profile
     }
 
-    override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: FeedItemContainer, newItem: FeedItemContainer): Boolean {
+        return oldItem.post.id == newItem.post.id
     }
 
 }

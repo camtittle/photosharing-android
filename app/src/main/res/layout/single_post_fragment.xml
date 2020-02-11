@@ -10,7 +10,7 @@
             type="com.camtittle.photosharing.ui.singlepost.SinglePostViewModel" />
         <variable
             name="post"
-            type="com.camtittle.photosharing.engine.data.network.model.Post" />
+            type="com.camtittle.photosharing.ui.shared.CorePostModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            bind:model="@{post}" />
+            bind:post="@{post}" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/commentsRecyclerView"
