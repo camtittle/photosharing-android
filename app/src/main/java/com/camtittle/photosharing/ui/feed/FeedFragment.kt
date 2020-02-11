@@ -20,6 +20,7 @@ class FeedFragment : Fragment() {
     }
 
     private lateinit var viewModel: FeedViewModel
+    private lateinit var binding: FeedFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -27,13 +28,14 @@ class FeedFragment : Fragment() {
 
         ensureAuthorised()
 
-        val binding = FeedFragmentBinding.inflate(inflater, container, false)
+        binding = FeedFragmentBinding.inflate(inflater, container, false)
         context ?: return binding.root
 
         val adapter = PostListAdapter()
         binding.feedFragmentRecyclerView.adapter = adapter
 
         observePosts(adapter)
+        observeSwipeUp()
 
         refreshPosts()
 
@@ -48,6 +50,7 @@ class FeedFragment : Fragment() {
     }
 
     private fun refreshPosts() {
+        binding.feedSwipeRefresh.isRefreshing = true
         viewModel.updatePostsList()
     }
 
@@ -55,8 +58,15 @@ class FeedFragment : Fragment() {
         viewModel.feedItems.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 adapter.submitList(it)
+                binding.feedSwipeRefresh.isRefreshing = false
             }
         })
+    }
+
+    private fun observeSwipeUp() {
+        binding.feedSwipeRefresh.setOnRefreshListener {
+            refreshPosts()
+        }
     }
 
 }
