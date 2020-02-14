@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.camtittle.photosharing.databinding.SignUpFragmentBinding
+import com.camtittle.photosharing.engine.common.result.EventObserver
+import com.camtittle.photosharing.engine.common.result.Result
 import com.camtittle.photosharing.ui.auth.AuthViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class SignUpFragment : Fragment() {
 
@@ -50,11 +52,20 @@ class SignUpFragment : Fragment() {
 
 
     private fun observeSignUpResult() {
-        viewModel.signUpResponse.observe(viewLifecycleOwner, Observer {
-            if (!it.confirmed) {
-                navigateToUnconfirmedAccount()
+        viewModel.signUpResponse.observe(viewLifecycleOwner, EventObserver {
+            when (it.status) {
+                Result.Status.ERROR -> showError(it.message ?: "Something went wrong")
+                Result.Status.SUCCESS -> {
+                    it.data?.let { response ->
+                        if (response.confirmed) navigateToUnconfirmedAccount()
+                    }
+                }
             }
         })
+    }
+
+    private fun showError(msg: String) {
+        Snackbar.make(binding.main, msg, Snackbar.LENGTH_LONG).show()
     }
 
     private fun navigateToUnconfirmedAccount() {

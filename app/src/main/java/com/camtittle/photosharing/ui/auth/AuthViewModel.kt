@@ -11,6 +11,7 @@ import com.camtittle.photosharing.engine.auth.model.SignUpResponse
 import com.camtittle.photosharing.engine.common.async.CallbackError
 import com.camtittle.photosharing.engine.common.async.ServiceCallback
 import com.camtittle.photosharing.engine.common.result.Event
+import com.camtittle.photosharing.engine.common.result.ResultEvent
 import com.camtittle.photosharing.engine.data.network.ApiService
 import com.camtittle.photosharing.engine.data.network.model.UpdateProfileRequest
 import retrofit2.Call
@@ -21,11 +22,11 @@ class AuthViewModel : ViewModel() {
 
     val model = AuthModel()
 
-    private val _signUpResponse = MutableLiveData<SignUpResponse>()
-    val signUpResponse: LiveData<SignUpResponse> = _signUpResponse
+    private val _signUpResponse = MutableLiveData<ResultEvent<SignUpResponse>>()
+    val signUpResponse: LiveData<ResultEvent<SignUpResponse>> = _signUpResponse
 
-    private val _signInResponse = MutableLiveData<Event<SignInResponse>>()
-    val signInResponse: LiveData<Event<SignInResponse>> = _signInResponse
+    private val _signInResponse = MutableLiveData<ResultEvent<SignInResponse>>()
+    val signInResponse: LiveData<ResultEvent<SignInResponse>> = _signInResponse
 
     private val _saveProfileDetailsResponse = MutableLiveData<Event<Unit>>()
     val saveProfileDetailsResponse: LiveData<Event<Unit>> = _saveProfileDetailsResponse
@@ -35,20 +36,23 @@ class AuthViewModel : ViewModel() {
     fun signUp() {
         val email = model.email
         val password = model.password
-        Log.d(tag, "Sign up clicked")
-        if (email.isNotBlank() && password.isNotBlank()) {
-            AuthManager.signUp(email, password, object : ServiceCallback<SignUpResponse> {
-                override fun onError(error: CallbackError) {
-                    Log.d(tag, "ERROR. " + error.msg)
-                }
-
-                override fun onSuccess(response: SignUpResponse) {
-                    Log.d(tag, "SUCCESS. Confirmation sent to:" + response.confirmationDestination)
-                    _signUpResponse.postValue(response)
-                }
-
-            })
+        if (email.isBlank() || password.isBlank()) {
+            _signUpResponse.postValue(ResultEvent.error("Email and password required"))
+            return
         }
+
+        AuthManager.signUp(email, password, object : ServiceCallback<SignUpResponse> {
+            override fun onError(error: CallbackError) {
+                Log.d(tag, "ERROR. " + error.msg)
+                _signUpResponse.postValue(ResultEvent.error(error.msg ?: "Something went wrong. Please try again"))
+            }
+
+            override fun onSuccess(response: SignUpResponse) {
+                Log.d(tag, "SUCCESS. Confirmation sent to:" + response.confirmationDestination)
+                _signUpResponse.postValue(ResultEvent.success(response))
+            }
+
+        })
     }
 
     fun confirmAccount() {
@@ -99,19 +103,22 @@ class AuthViewModel : ViewModel() {
     fun signIn() {
         val email = model.email
         val password = model.password
-        Log.d(tag, "$email $password")
-        if (!email.isBlank() && !password.isBlank()) {
-            AuthManager.signIn(email, password, object : ServiceCallback<SignInResponse> {
-                override fun onSuccess(response: SignInResponse) {
-                    _signInResponse.postValue(Event(response))
-                    model.clear()
-                }
-
-                override fun onError(error: CallbackError) {
-                    Log.e(tag, error.msg?: "Something went wrong with sign in")
-                }
-
-            })
+        if (email.isBlank() || password.isBlank()) {
+            _signInResponse.postValue(ResultEvent.error("Email and password required"))
+            return
         }
+
+        AuthManager.signIn(email, password, object : ServiceCallback<SignInResponse> {
+            override fun onSuccess(response: SignInResponse) {
+                _signInResponse.postValue(ResultEvent.success(response))
+                model.clear()
+            }
+
+            override fun onError(error: CallbackError) {
+                Log.e(tag, error.msg?: "Something went wrong with sign in")
+                _signInResponse.postValue(ResultEvent.error(error.msg ?: "Something went wrong signing you in"))
+            }
+
+        })
     }
 }

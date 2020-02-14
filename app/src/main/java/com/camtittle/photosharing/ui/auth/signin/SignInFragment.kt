@@ -1,6 +1,5 @@
 package com.camtittle.photosharing.ui.auth.signin
 
-import android.content.Context
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +12,9 @@ import androidx.navigation.fragment.findNavController
 import com.camtittle.photosharing.databinding.SignInFragmentBinding
 import com.camtittle.photosharing.engine.common.result.EventObserver
 import com.camtittle.photosharing.ui.auth.AuthViewModel
-import android.view.inputmethod.InputMethodManager
+import com.camtittle.photosharing.engine.common.result.Result
 import com.camtittle.photosharing.ui.KeyboardUtils
+import com.google.android.material.snackbar.Snackbar
 
 
 class SignInFragment : Fragment() {
@@ -48,13 +48,13 @@ class SignInFragment : Fragment() {
 
     private fun addSignUpButtonClickListener() {
         binding.signInSignUpButton.setOnClickListener {
+            hideKeyboard()
             navigateToSignUp()
         }
     }
 
     private fun addSignInButtonClickListener() {
         binding.signInSubmitButton.setOnClickListener {
-            Log.d(logTag, "SIGN IN CLICK ${viewModel.model.email}")
             hideKeyboard()
             viewModel.signIn()
         }
@@ -63,8 +63,16 @@ class SignInFragment : Fragment() {
     private fun observeSignInResponse() {
         viewModel.signInResponse.observe(viewLifecycleOwner, EventObserver {
             Log.d(logTag, "observing sign in response")
-            navigateToFeed()
+            when (it.status) {
+                Result.Status.ERROR -> toast(it.message ?: "An error occurred")
+                Result.Status.SUCCESS -> navigateToFeed()
+            }
+
         })
+    }
+
+    private fun toast(msg: String) {
+        Snackbar.make(binding.main, msg, Snackbar.LENGTH_LONG).show()
     }
 
     private fun navigateToSignUp() {
