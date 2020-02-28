@@ -13,6 +13,7 @@ import com.camtittle.photosharing.engine.data.network.ApiService
 import com.camtittle.photosharing.engine.data.network.model.FeedPost
 import com.camtittle.photosharing.engine.data.repository.ProfileRepository
 import com.camtittle.photosharing.ui.shared.CorePostModel
+import com.camtittle.photosharing.ui.shared.FeedItemContainer
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -58,7 +59,13 @@ class FeedViewModel : ViewModel() {
             return emptyList()
         }
 
-        return posts.map { FeedItemContainer(CorePostModel.fromFeedPost(it), profiles?.get(it.userId)) }
+        return posts.map {
+            FeedItemContainer(
+                CorePostModel.fromFeedPost(
+                    it
+                ), profiles?.get(it.userId)
+            )
+        }
     }
 
 }

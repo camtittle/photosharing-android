@@ -7,7 +7,7 @@
     <data>
         <variable
             name="model"
-            type="com.camtittle.photosharing.ui.feed.FeedItemContainer" />
+            type="com.camtittle.photosharing.ui.shared.FeedItemContainer" />
         <variable
             name="onClickListener"
             type="android.view.View.OnClickListener" />

@@ -1,4 +1,4 @@
-package com.camtittle.photosharing.ui.feed
+package com.camtittle.photosharing.ui.shared
 
 import com.camtittle.photosharing.engine.data.model.Profile
 import com.camtittle.photosharing.engine.data.network.model.FeedPost

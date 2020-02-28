@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.camtittle.photosharing.databinding.PostListItemBinding
 import com.camtittle.photosharing.ui.shared.CorePostModel
+import com.camtittle.photosharing.ui.shared.FeedItemContainer
 import com.squareup.picasso.Picasso
 
 class PostListAdapter : ListAdapter<FeedItemContainer, PostListAdapter.ViewHolder>(DiffCallback()) {

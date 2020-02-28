@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.camtittle.photosharing.databinding.CommentListItemBinding
 import com.camtittle.photosharing.engine.data.network.model.Comment
 
-class CommentListAdapter : ListAdapter<Comment, CommentListAdapter.ViewHolder>(DiffCallback()) {
+class CommentListAdapter : ListAdapter<CommentWithProfile, CommentListAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comment = getItem(position)
 
         holder.apply {
             bind(comment)
-            Log.d("CommentList", comment.content)
+            Log.d("CommentList", comment.profile?.name ?: "noName")
             itemView.tag = comment
         }
 
@@ -32,20 +32,22 @@ class CommentListAdapter : ListAdapter<Comment, CommentListAdapter.ViewHolder>(D
         private val binding: CommentListItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Comment) {
-            binding.comment = item
+        fun bind(item: CommentWithProfile) {
+            binding.comment = item.comment
+            binding.profile = item.profile
         }
     }
 
 }
 
-private class DiffCallback : DiffUtil.ItemCallback<Comment>() {
-    override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-        return oldItem.id == newItem.id
+private class DiffCallback : DiffUtil.ItemCallback<CommentWithProfile>() {
+    override fun areContentsTheSame(oldItem: CommentWithProfile, newItem: CommentWithProfile): Boolean {
+        return oldItem.comment.id == newItem.comment.id &&
+                oldItem.profile == newItem.profile
     }
 
-    override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-        return oldItem.id == newItem.id
+    override fun areItemsTheSame(oldItem: CommentWithProfile, newItem: CommentWithProfile): Boolean {
+        return oldItem.comment.id == newItem.comment.id
     }
 
 }

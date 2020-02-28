@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="comment"
             type="com.camtittle.photosharing.engine.data.network.model.Comment" />
+        <variable
+            name="profile"
+            type="com.camtittle.photosharing.engine.data.model.Profile" />
 
     </data>
 
@@ -21,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="@{comment.userId}"
+            android:text="@{profile.name}"
             android:textStyle="bold"
             tools:text="CommentAuthor" />
 

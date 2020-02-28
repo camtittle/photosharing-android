@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.camtittle.photosharing.engine.auth.AuthManager
 import com.camtittle.photosharing.engine.common.result.Event
+import com.camtittle.photosharing.engine.common.result.ResultEvent
 import com.camtittle.photosharing.engine.data.network.ApiService
 import com.camtittle.photosharing.engine.data.network.model.CreateImagePostRequest
 import com.camtittle.photosharing.engine.data.network.model.CreatedPost
@@ -21,30 +22,34 @@ class CreatePostViewModel : ViewModel() {
     lateinit var currentPhotoPath: String
     var description = ObservableField<String>("")
     var imageBitmap: Bitmap? = null
+    var latlong = ObservableField<LatLong?>()
 
     private val tag = CreatePostViewModel::class.java.name
 
-    private val _creationResult = MutableLiveData<Event<CreatedPost>>()
-    val creationResult: LiveData<Event<CreatedPost>> = _creationResult
+    private val _creationResult = MutableLiveData<ResultEvent<CreatedPost>>()
+    val creationResult: LiveData<ResultEvent<CreatedPost>> = _creationResult
 
     fun submitPost() {
-        // todo handle error nicely
         val request = buildImagePostRequest() ?: return
-
         val token = AuthManager.getIdToken()
-        Log.d(tag, "token: $token")
+
+        _creationResult.postValue(ResultEvent.loading())
 
         ApiService.api.createPost(token, request).enqueue(object : Callback<CreatedPost> {
 
             override fun onResponse(call: Call<CreatedPost>, response: Response<CreatedPost>) {
                 Log.d(tag, "createPost Status code:" + response.message())
-                response.body()?.let { _creationResult.postValue(Event(it)) }
-                clearModel()
+                if (response.isSuccessful) {
+                    response.body()?.let { _creationResult.postValue(ResultEvent.success(it)) }
+                    clearModel()
+                } else {
+                    _creationResult.postValue(ResultEvent.error("Something went wrong. Status Code: " + response.code()))
+                }
             }
 
             override fun onFailure(call: Call<CreatedPost>, t: Throwable) {
                 Log.e(tag, "createPost failed: " + t.message)
-                _creationResult.postValue(null)
+                _creationResult.postValue(ResultEvent.error(t.message ?: "Something went wrong. Please try again"))
             }
 
         })
@@ -53,15 +58,25 @@ class CreatePostViewModel : ViewModel() {
 
     private fun buildImagePostRequest(): CreateImagePostRequest? {
         val currentDescription = description.get()
-        Log.d(tag, "desc: $currentDescription")
-        if (currentDescription.isNullOrEmpty() || imageBitmap == null) {
-            // TODO emit an "error" observable
+        if (currentDescription.isNullOrEmpty()) {
+            _creationResult.postValue(ResultEvent.error("Description required"))
+            return null
+        }
+
+        if (imageBitmap == null) {
+            _creationResult.postValue(ResultEvent.error("No Image found. Please try again"))
+            return null
+        }
+
+        val currentLatLong = latlong.get()
+        if (currentLatLong == null) {
+            _creationResult.postValue(ResultEvent.error("Cannot post without location"))
             return null
         }
 
         val model = CreateImagePostRequest(getImageBase64(), currentDescription)
-        model.longitude = 50.0
-        model.latitude = 120.0
+        model.longitude = currentLatLong.lat
+        model.latitude = currentLatLong.long
 
         return model
     }

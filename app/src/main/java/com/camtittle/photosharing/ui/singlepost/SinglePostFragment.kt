@@ -34,6 +34,7 @@ class SinglePostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = SinglePostFragmentBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -74,7 +75,7 @@ class SinglePostFragment : Fragment() {
     }
 
     private fun observeComments(adapter: CommentListAdapter) {
-        viewModel.comments.observe(viewLifecycleOwner, Observer {
+        viewModel.commentsProfilesCombined.observe(viewLifecycleOwner, Observer {
             when (it.status) {
 //                Result.Status.LOADING ->
 //                    Toast.makeText(context, "Loading comments...", Toast.LENGTH_SHORT).show()

@@ -1,5 +1,6 @@
 package com.camtittle.photosharing.ui.createpost.editpostdetails
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,16 @@ import com.camtittle.photosharing.databinding.EditPostDetailsFragmentBinding
 import com.camtittle.photosharing.ui.createpost.CreatePostViewModel
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
+import android.os.Looper
 import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.Observer
 import com.camtittle.photosharing.engine.common.result.EventObserver
+import com.camtittle.photosharing.engine.common.result.Result
 import com.camtittle.photosharing.engine.image.ImageUtils
 import com.camtittle.photosharing.ui.KeyboardUtils
+import com.camtittle.photosharing.ui.createpost.LatLong
+import com.camtittle.photosharing.ui.createpost.LocationUtil
+import com.google.android.gms.location.*
+import com.google.android.material.snackbar.Snackbar
 import java.io.FileNotFoundException
 
 
@@ -24,6 +29,8 @@ class EditPostDetailsFragment : Fragment() {
 
     private lateinit var viewModel: CreatePostViewModel
     private lateinit var binding: EditPostDetailsFragmentBinding
+
+    private lateinit var locationManager: FusedLocationProviderClient
 
     private val maxImageSizePx = 1500
 
@@ -46,6 +53,7 @@ class EditPostDetailsFragment : Fragment() {
 
             observeCreationResult()
             addSubmitButtonClickListener()
+            locationManager = LocationServices.getFusedLocationProviderClient(it)
         }
     }
 
@@ -59,6 +67,11 @@ class EditPostDetailsFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        activity?.let { setupLocationClient(it) }
+    }
+
     private fun navigateToCapturePhotoFragment() {
         val action = EditPostDetailsFragmentDirections.actionGlobalCreatePostNavigation()
         findNavController().navigate(action)
@@ -67,7 +80,6 @@ class EditPostDetailsFragment : Fragment() {
     private fun showSavedFileInImageView() {
         getSavedBitmap()?.also {
             scaleBitmap(it).also { scaledBitmap ->
-                Toast.makeText(context, "${scaledBitmap.width} x ${scaledBitmap.height}", Toast.LENGTH_LONG).show()
                 binding.photoPreview.setImageBitmap(scaledBitmap)
                 viewModel.imageBitmap = scaledBitmap
 
@@ -101,26 +113,78 @@ class EditPostDetailsFragment : Fragment() {
 
     private fun addSubmitButtonClickListener() {
         binding.createPostSubmitButton.setOnClickListener {
-            Log.d(tag, "SubmitPost click")
             KeyboardUtils.hide(activity)
-            viewModel.submitPost()
+            viewModel.latlong.get().let {
+                if (it == null) {
+                    showSnackbar("Cannot submit post without location")
+                } else {
+                    viewModel.submitPost()
+                }
+            }
         }
     }
 
     private fun observeCreationResult() {
         viewModel.creationResult.observe(viewLifecycleOwner, EventObserver {
-            if (it == null) {
-                Toast.makeText(context, "Error creating post", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(context, "Created post with ID ${it.id} successfully", Toast.LENGTH_LONG).show()
-                navigateToFeed()
+            when (it.status) {
+                Result.Status.LOADING -> setLoading(true)
+                Result.Status.ERROR -> {
+                    setLoading(false)
+                    showSnackbar(it.message ?: "Something went wrong")
+                }
+                Result.Status.SUCCESS -> {
+                    showSnackbar("Post created successfully")
+                    navigateToFeed()
+                }
             }
         })
+    }
+
+    private fun setLoading(loading: Boolean) {
+        if (loading) {
+            binding.createPostSubmitButton.visibility = View.GONE
+            binding.submitPostLoadingBar.visibility = View.VISIBLE
+        } else {
+            binding.createPostSubmitButton.visibility = View.VISIBLE
+            binding.submitPostLoadingBar.visibility = View.GONE
+        }
+    }
+
+    private fun showSnackbar(msg: String) {
+        Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG).show()
     }
 
     private fun navigateToFeed() {
         val action = EditPostDetailsFragmentDirections.actionGlobalFeedFragment()
         findNavController().navigate(action)
+    }
+
+    private fun setupLocationClient(activity: Activity) {
+        LocationUtil.checkLocationPermission(activity)
+
+        val locationRequest = LocationUtil.createLocationRequest()
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val client = LocationServices.getSettingsClient(activity)
+        val task = client.checkLocationSettings(builder.build())
+        task.addOnSuccessListener {
+            locationManager.requestLocationUpdates(locationRequest, object : LocationCallback() {
+
+                override fun onLocationResult(locationResult: LocationResult?) {
+                    locationResult ?: return
+                    for (location in locationResult.locations) {
+                        Log.d("EditPostDetails", "Location: ${location.latitude}, ${location.longitude}")
+                        viewModel.latlong.set(LatLong(location.latitude, location.longitude))
+                    }
+                }
+
+            }, Looper.getMainLooper())
+        }
+
+        task.addOnFailureListener {
+            showSnackbar("Error getting location. Ensure location services are enabled and try again")
+        }
     }
 
 }
