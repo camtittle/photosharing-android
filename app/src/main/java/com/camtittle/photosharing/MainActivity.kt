@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         val logoutItem = navigationView.menu.findItem(R.id.sign_out)
         logoutItem.setOnMenuItemClickListener {
             AuthManager.signOut()
-            //navigateToAuth()
             drawerLayout.closeDrawers()
             true
         }
@@ -71,11 +70,7 @@ class MainActivity : AppCompatActivity() {
         setupWithNavController(navigationView, navController)
     }
 
-    private fun navigateToAuth() {
-        findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_global_auth_navigation)
-    }
-
     private fun onSignOut() {
-        navigateToAuth()
+        findNavController(this, R.id.nav_host_fragment).navigate(R.id.action_global_auth_navigation)
     }
 }

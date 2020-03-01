@@ -23,6 +23,9 @@ object AuthManager {
 
     private var signOutListener: () -> Unit = {}
 
+    var userId: String? = null
+        private set
+
     fun init(context: Context) {
         instance.initialize(context, object : Callback<UserStateDetails?> {
             override fun onResult(result: UserStateDetails?) {
@@ -50,7 +53,10 @@ object AuthManager {
             instance.currentUserState().userState.let {
                 if (it != UserState.SIGNED_IN) {
                     signOutListener()
+                } else {
+                    refreshUserAttributes()
                 }
+
             }
 
         }
@@ -133,7 +139,24 @@ object AuthManager {
         return instance.tokens.idToken.tokenString
     }
 
+    private fun refreshUserAttributes() {
+        instance.getUserAttributes(object : Callback<Map<String, String>> {
+            override fun onError(e: Exception?) {
+                Log.e(tag, "Error fetching user attributes")
+            }
+
+            override fun onResult(result: Map<String, String>?) {
+                result?.let {
+                    if (it.containsKey("sub")) {
+                        userId = it["sub"]
+                    }
+                }
+            }
+        })
+    }
+
     fun setSignOutListener(listener: () -> Unit) {
+        userId = null
         signOutListener = listener
     }
 

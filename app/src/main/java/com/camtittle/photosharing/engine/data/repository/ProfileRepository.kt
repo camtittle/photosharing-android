@@ -24,7 +24,7 @@ object ProfileRepository {
 
             override fun onFailure(call: Call<Map<String, Profile>>, t: Throwable) {
                 Log.e(TAG, "Failed to fetch profiles for user IDs: $commaSeparatedIds")
-                liveData.postValue(Result.error(t.message ?: "Error fetching comments"))
+                liveData.postValue(Result.error(t.message ?: "Error fetching profile"))
             }
 
             override fun onResponse(call: Call<Map<String, Profile>>,
@@ -32,6 +32,31 @@ object ProfileRepository {
                 response.body().let {
                     if (it == null) {
                         liveData.postValue(Result.error("Error fetching profiles. Status code: ${response.code()}"))
+                    } else {
+                        liveData.postValue(Result.success(it))
+                    }
+                }
+            }
+        })
+
+        return liveData
+    }
+
+    fun getProfile(userId: String): LiveData<Result<Profile>> {
+        Log.d(TAG, "Fetching profile for user ID $userId")
+        val liveData = MutableLiveData<Result<Profile>>()
+
+        ApiService.api.getProfile(userId).enqueue(object : Callback<Profile> {
+
+            override fun onFailure(call: Call<Profile>, t: Throwable) {
+                Log.e(TAG, "Failed to fetch profile for user ID: $userId")
+                liveData.postValue(Result.error(t.message ?: "Error fetching profile"))
+            }
+
+            override fun onResponse(call: Call<Profile>, response: Response<Profile>) {
+                response.body().let {
+                    if (it == null) {
+                        liveData.postValue(Result.error("Error fetching profile. Status code: ${response.code()}"))
                     } else {
                         liveData.postValue(Result.success(it))
                     }

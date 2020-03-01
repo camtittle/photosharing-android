@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.camtittle.photosharing.databinding.EditProfileFragmentBinding
 import com.camtittle.photosharing.engine.common.result.EventObserver
+import com.camtittle.photosharing.engine.common.result.Result
 import com.camtittle.photosharing.ui.auth.AuthViewModel
 import com.camtittle.photosharing.ui.auth.signin.SignInFragment
 
@@ -35,6 +37,12 @@ class EditProfileFragment : Fragment() {
         binding.model = viewModel
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        refreshProfile()
+    }
+
     private fun addButtonClickListener() {
         binding.editProfileSubmitButton.setOnClickListener {
             viewModel.saveProfileDetails()
@@ -50,6 +58,17 @@ class EditProfileFragment : Fragment() {
     private fun navigateToFeed() {
         val action = EditProfileFragmentDirections.actionEditProfileFragmentToFeedFragment()
         findNavController().navigate(action)
+    }
+
+    private fun refreshProfile() {
+        viewModel.refreshProfileData()?.let {
+            it.observe(viewLifecycleOwner, Observer { profileResult ->
+                if (profileResult.status == Result.Status.SUCCESS) {
+                    viewModel.model.name = profileResult.data?.name ?: ""
+                }
+            })
+        }
+
     }
 
 }

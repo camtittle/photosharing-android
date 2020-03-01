@@ -11,9 +11,12 @@ import com.camtittle.photosharing.engine.auth.model.SignUpResponse
 import com.camtittle.photosharing.engine.common.async.CallbackError
 import com.camtittle.photosharing.engine.common.async.ServiceCallback
 import com.camtittle.photosharing.engine.common.result.Event
+import com.camtittle.photosharing.engine.common.result.Result
 import com.camtittle.photosharing.engine.common.result.ResultEvent
+import com.camtittle.photosharing.engine.data.model.Profile
 import com.camtittle.photosharing.engine.data.network.ApiService
 import com.camtittle.photosharing.engine.data.network.model.UpdateProfileRequest
+import com.camtittle.photosharing.engine.data.repository.ProfileRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -77,6 +80,14 @@ class AuthViewModel : ViewModel() {
             })
 
         }
+    }
+
+    fun refreshProfileData(): LiveData<Result<Profile>>? {
+        AuthManager.userId?.let { userId ->
+            return ProfileRepository.getProfile(userId)
+        }
+
+        return null
     }
 
     fun saveProfileDetails() {

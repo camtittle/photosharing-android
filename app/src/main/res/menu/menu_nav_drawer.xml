@@ -3,7 +3,12 @@
 
     <item
         android:id="@id/create_post_navigation"
-        android:title="Create post" />
+        android:title="Create Post" />
+
+
+    <item
+        android:id="@id/editProfileFragment"
+        android:title="Edit Profile" />
 
     <item
         android:id="@+id/sign_out"

@@ -29,7 +29,10 @@ interface PhotosharingApi {
     fun updateProfile(@Header("Authorization") token: String,
                       @Body body: UpdateProfileRequest): Call<Void>
 
-    @GET("profile")
+    @GET("profile/batch")
     fun getProfiles(@Query("userIds") userIds: String): Call<Map<String, Profile>>
+
+    @GET("profile")
+    fun getProfile(@Query("userId") userId: String): Call<Profile>
 
 }
