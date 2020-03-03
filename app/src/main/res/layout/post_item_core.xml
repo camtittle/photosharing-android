@@ -37,12 +37,13 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:text="0.4km"
+            android:text="@{post.formattedDistance}"
             android:textAllCaps="false"
             android:textColor="@color/grayDark"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/postListItemUsernameText" />
+            app:layout_constraintTop_toTopOf="@+id/postListItemUsernameText"
+            tools:text="0.4km" />
 
         <ImageView
             android:id="@+id/postListItemImage"

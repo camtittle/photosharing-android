@@ -7,12 +7,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.camtittle.photosharing.engine.auth.AuthManager
-import com.camtittle.photosharing.engine.common.result.Event
 import com.camtittle.photosharing.engine.common.result.ResultEvent
 import com.camtittle.photosharing.engine.data.network.ApiService
 import com.camtittle.photosharing.engine.data.network.model.CreateImagePostRequest
 import com.camtittle.photosharing.engine.data.network.model.CreatedPost
 import com.camtittle.photosharing.engine.image.ImageUtils
+import com.camtittle.photosharing.engine.location.LatLong
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -74,11 +74,8 @@ class CreatePostViewModel : ViewModel() {
             return null
         }
 
-        val model = CreateImagePostRequest(getImageBase64(), currentDescription)
-        model.longitude = currentLatLong.lat
-        model.latitude = currentLatLong.long
-
-        return model
+        return CreateImagePostRequest(getImageBase64(), currentDescription,
+            currentLatLong.lat, currentLatLong.long)
     }
 
     private fun getImageBase64(): String {

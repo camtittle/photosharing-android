@@ -7,7 +7,7 @@ object ApiService {
 
     val api: PhotosharingApi
 
-    // private const val baseUrl = "http://10.0.2.2:3000/"
+//     private const val baseUrl = "http://10.0.2.2:3000/"
     private const val baseUrl = "https://sh3pakf5e3.execute-api.eu-central-1.amazonaws.com/dev/"
 
     init {

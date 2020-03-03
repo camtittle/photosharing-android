@@ -1,11 +1,8 @@
 package com.camtittle.photosharing.ui.createpost.capturephoto
 
-import android.Manifest
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Environment
@@ -15,15 +12,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.navigation.fragment.findNavController
 
 import com.camtittle.photosharing.R
 import com.camtittle.photosharing.databinding.CreatePostFragmentBinding
 import com.camtittle.photosharing.ui.createpost.CreatePostViewModel
-import com.camtittle.photosharing.ui.createpost.LocationUtil
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -54,7 +48,6 @@ class CapturePhotoFragment : Fragment() {
 
         activity?.also {
             viewModel = ViewModelProviders.of(it).get(CreatePostViewModel::class.java)
-            LocationUtil.checkLocationPermission(it)
         }
 
         addSelectPhotoButtonListener()

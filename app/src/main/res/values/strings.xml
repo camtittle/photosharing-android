@@ -29,4 +29,5 @@
     <string name="sign_up_done">Save</string>
     <string name="searching_location_label">Searching for location...</string>
     <string name="found_location_label">Your post will be tagged with your location</string>
+    <string name="post_distance_km">%skm</string>
 </resources>

@@ -38,7 +38,7 @@ object ImageUtils {
 
     fun compressBitmapToJpeg(bmp: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        bmp.compress(Bitmap.CompressFormat.JPEG, 50, stream)
         return stream.toByteArray()
     }
 

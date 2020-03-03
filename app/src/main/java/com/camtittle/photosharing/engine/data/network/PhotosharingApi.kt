@@ -8,7 +8,8 @@ import retrofit2.http.*
 interface PhotosharingApi {
 
     @GET("feed")
-    fun getPosts(): Call<List<FeedPost>>
+    fun getFeed(@Query("lat") lat: Double,
+                @Query("lon") long: Double): Call<List<FeedPost>>
 
     @POST("posts")
     fun createPost(@Header("Authorization") token: String,

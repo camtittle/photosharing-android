@@ -14,9 +14,11 @@ data class CorePostModel(
     var commentCount: Int = 0) {
 
     var formattedDate: String = ""
+    var formattedDistance: String = ""
 
     init {
         formattedDate = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(timestamp)
+        formattedDistance = String.format("%.2fkm away", distanceKm)
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.camtittle.photosharing.ui.feed
 
+import android.app.Activity
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,10 @@ import androidx.navigation.fragment.findNavController
 
 import com.camtittle.photosharing.R
 import com.camtittle.photosharing.databinding.FeedFragmentBinding
+import com.camtittle.photosharing.engine.common.result.EventObserver
+import com.camtittle.photosharing.engine.location.LatLong
+import com.camtittle.photosharing.engine.location.LocationService
+import com.google.android.material.snackbar.Snackbar
 
 class FeedFragment : Fragment() {
 
@@ -21,6 +26,9 @@ class FeedFragment : Fragment() {
 
     private lateinit var viewModel: FeedViewModel
     private lateinit var binding: FeedFragmentBinding
+
+    private var location: LatLong? = null
+    private var shouldRefreshOnNextLocation = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -36,10 +44,19 @@ class FeedFragment : Fragment() {
 
         observePosts(adapter)
         observeSwipeUp()
-
-        refreshPosts()
+        observeErrors()
 
         return binding.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        activity?.let {
+            observeLocation(it)
+        }
+
+        refreshPosts()
     }
 
     private fun ensureAuthorised() {
@@ -51,7 +68,13 @@ class FeedFragment : Fragment() {
 
     private fun refreshPosts() {
         binding.feedSwipeRefresh.isRefreshing = true
-        viewModel.updatePostsList()
+        location.let {
+            if (it == null) {
+                shouldRefreshOnNextLocation = true
+            } else {
+                viewModel.updatePostsList(it.lat, it.long)
+            }
+        }
     }
 
     private fun observePosts(adapter: PostListAdapter) {
@@ -63,9 +86,41 @@ class FeedFragment : Fragment() {
         })
     }
 
+    private fun observeErrors() {
+        viewModel.errors.observe(viewLifecycleOwner, EventObserver {
+            binding.feedSwipeRefresh.isRefreshing = false
+            showSnackbar(it)
+        })
+    }
+
     private fun observeSwipeUp() {
         binding.feedSwipeRefresh.setOnRefreshListener {
             refreshPosts()
+        }
+    }
+
+    private fun observeLocation(activity: Activity) {
+        LocationService.getInstance(activity).let { locationService ->
+
+            locationService.location.observe(viewLifecycleOwner, Observer {
+                location = it
+                if (shouldRefreshOnNextLocation) {
+                    shouldRefreshOnNextLocation = false
+                    refreshPosts()
+                }
+            })
+
+            locationService.errors.observe(viewLifecycleOwner, EventObserver {
+                showSnackbar(it)
+                shouldRefreshOnNextLocation = true
+                binding.feedSwipeRefresh.isRefreshing = false
+            })
+        }
+    }
+
+    private fun showSnackbar(msg: String) {
+        view?.let {
+            Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show()
         }
     }
 

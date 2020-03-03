@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.camtittle.photosharing.engine.auth.AuthManager
 import com.camtittle.photosharing.engine.common.livedata.CombinedLiveData
+import com.camtittle.photosharing.engine.common.result.Event
 import com.camtittle.photosharing.engine.common.result.Result
 import com.camtittle.photosharing.engine.data.model.Profile
 import com.camtittle.photosharing.engine.data.network.ApiService
@@ -21,6 +22,9 @@ import retrofit2.Response
 class FeedViewModel : ViewModel() {
 
     private val posts = MutableLiveData<List<FeedPost>>()
+
+    private val _errors = MutableLiveData<Event<String>>()
+    val errors: LiveData<Event<String>> = _errors
 
     var profiles: LiveData<Result<Map<String, Profile>>> = Transformations.switchMap(posts) {
         if (it == null) return@switchMap MutableLiveData<Result<Map<String, Profile>>>()
@@ -39,15 +43,22 @@ class FeedViewModel : ViewModel() {
         return AuthManager.isSignedIn()
     }
 
-    fun updatePostsList() {
-        ApiService.api.getPosts().enqueue(object : Callback<List<FeedPost>> {
+    fun updatePostsList(lat: Double, lon: Double) {
+        ApiService.api.getFeed(lat, lon).enqueue(object : Callback<List<FeedPost>> {
 
             override fun onResponse(call: Call<List<FeedPost>>, response: Response<List<FeedPost>>) {
-                response.body()?.let { posts.postValue(it) }
+                response.body().let {
+                    if (it == null) {
+                        _errors.postValue(Event("Error fetching feed. Status code: ${response.code()}"))
+                    } else {
+                        posts.postValue(it)
+                    }
+                }
             }
 
             override fun onFailure(call: Call<List<FeedPost>>, t: Throwable) {
                 Log.e(tag, "Error fetching posts" + t.message)
+                _errors.postValue(Event("Error fetching feed. Check your network connection."))
             }
 
         })
