@@ -93,11 +93,9 @@ class SinglePostFragment : Fragment() {
         viewModel.submitComment.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "observed submitted comment response")
             when (it.status) {
-                Result.Status.LOADING ->
-                    Toast.makeText(context, "Submitting comment..", Toast.LENGTH_SHORT).show()
+                Result.Status.LOADING -> setLoading(true)
                 Result.Status.SUCCESS -> onCommentSubmittedSuccessfully()
-                Result.Status.ERROR ->
-                    Toast.makeText(context, "Error submitting comment: ${it.message}", Toast.LENGTH_SHORT).show()
+                Result.Status.ERROR ->   onCommentSubmissionError(it.message)
             }
 
         })
@@ -105,8 +103,15 @@ class SinglePostFragment : Fragment() {
 
     private fun onCommentSubmittedSuccessfully() {
         viewModel.resetCommentForm()
+        setLoading(false)
         KeyboardUtils.hide(activity)
         viewModel.refresh()
+    }
+
+    private fun onCommentSubmissionError(msg: String?) {
+        setLoading(false)
+        Toast.makeText(context, "Error submitting comment: $msg", Toast.LENGTH_SHORT).show()
+        KeyboardUtils.hide(activity)
     }
 
     private fun bindPost(post: SinglePost) {
@@ -119,6 +124,16 @@ class SinglePostFragment : Fragment() {
     private fun setSubmitCommentClickLister() {
         binding.submitCommentButton.setOnClickListener {
             viewModel.submitComment()
+        }
+    }
+
+    private fun setLoading(loading: Boolean) {
+        if (loading) {
+            binding.submitCommentProgress.visibility = View.VISIBLE
+            binding.submitCommentButton.visibility = View.GONE
+        } else {
+            binding.submitCommentProgress.visibility = View.GONE
+            binding.submitCommentButton.visibility = View.VISIBLE
         }
     }
 }

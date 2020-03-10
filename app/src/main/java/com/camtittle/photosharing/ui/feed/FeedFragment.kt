@@ -34,10 +34,12 @@ class FeedFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProviders.of(this).get(FeedViewModel::class.java)
 
-        ensureAuthorised()
 
         binding = FeedFragmentBinding.inflate(inflater, container, false)
-        context ?: return binding.root
+
+        if (!ensureAuthorised() || context == null) {
+            return binding.root
+        }
 
         val adapter = PostListAdapter()
         binding.feedFragmentRecyclerView.adapter = adapter
@@ -59,11 +61,14 @@ class FeedFragment : Fragment() {
         refreshPosts()
     }
 
-    private fun ensureAuthorised() {
+    private fun ensureAuthorised(): Boolean {
         if (!viewModel.isSignedIn()) {
             val action = FeedFragmentDirections.actionGlobalAuthNavigation()
             findNavController().navigate(action)
+            return false
         }
+
+        return true
     }
 
     private fun refreshPosts() {

@@ -18,7 +18,7 @@ data class CorePostModel(
 
     init {
         formattedDate = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(timestamp)
-        formattedDistance = String.format("%.2fkm away", distanceKm)
+        formattedDistance = String.format("%.1fkm away", distanceKm)
     }
 
     companion object {

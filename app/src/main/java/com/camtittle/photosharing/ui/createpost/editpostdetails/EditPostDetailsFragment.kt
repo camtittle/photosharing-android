@@ -124,6 +124,7 @@ class EditPostDetailsFragment : Fragment() {
                     showSnackbar(it.message ?: "Something went wrong")
                 }
                 Result.Status.SUCCESS -> {
+                    setLoading(false)
                     showSnackbar("Post created successfully")
                     navigateToFeed()
                 }
@@ -139,7 +140,7 @@ class EditPostDetailsFragment : Fragment() {
 
     private fun setLoading(loading: Boolean) {
         if (loading) {
-            binding.createPostSubmitButton.visibility = View.GONE
+            binding.createPostSubmitButton.visibility = View.INVISIBLE
             binding.submitPostLoadingBar.visibility = View.VISIBLE
         } else {
             binding.createPostSubmitButton.visibility = View.VISIBLE

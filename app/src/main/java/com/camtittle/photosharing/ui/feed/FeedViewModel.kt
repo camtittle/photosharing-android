@@ -44,6 +44,7 @@ class FeedViewModel : ViewModel() {
     }
 
     fun updatePostsList(lat: Double, lon: Double) {
+        Log.d(tag, "Getting feed for location $lat, $lon")
         ApiService.api.getFeed(lat, lon).enqueue(object : Callback<List<FeedPost>> {
 
             override fun onResponse(call: Call<List<FeedPost>>, response: Response<List<FeedPost>>) {

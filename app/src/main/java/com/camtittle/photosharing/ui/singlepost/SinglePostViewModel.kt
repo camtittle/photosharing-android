@@ -76,8 +76,9 @@ class SinglePostViewModel : ViewModel() {
     private fun getPost(postId: String) {
         // Emit a loading result
         _post.postValue(Result.loading())
+        val token = AuthManager.getIdToken()
 
-        ApiService.api.getPost(postId).enqueue(object : Callback<SinglePost?> {
+        ApiService.api.getPost(token, postId).enqueue(object : Callback<SinglePost?> {
             override fun onFailure(call: Call<SinglePost?>, t: Throwable) {
                 Log.e(TAG, "Failed to fetch post with id $postId")
                 _post.postValue(Result.error(t.message ?: "Error fetching post"))
@@ -130,6 +131,7 @@ class SinglePostViewModel : ViewModel() {
         val request = AddCommentRequest(post.id, post.timestamp, commentContent)
 
         Log.d(TAG, "Submitting comment: $commentContent")
+        _submitComment.postValue(Result.loading())
 
         ApiService.api.addComment(accessToken, request).enqueue(object : Callback<AddCommentResponse> {
             override fun onFailure(call: Call<AddCommentResponse>, t: Throwable) {
@@ -165,7 +167,6 @@ class SinglePostViewModel : ViewModel() {
             else emptyMap()
 
         return Result.success(comments.data.map {
-            Log.d(TAG, "mapping the name: " + profilesData[it.userId]?.name ?: "")
             CommentWithProfile(
                 it,
                 profilesData[it.userId]

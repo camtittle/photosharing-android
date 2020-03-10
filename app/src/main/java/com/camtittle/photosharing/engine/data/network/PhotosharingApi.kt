@@ -16,7 +16,8 @@ interface PhotosharingApi {
                    @Body body: CreateImagePostRequest): Call<CreatedPost>
 
     @GET("posts/{id}")
-    fun getPost(@Path("id") id: String): Call<SinglePost>
+    fun getPost(@Header("Authorization") token: String,
+                @Path("id") id: String): Call<SinglePost>
 
     @GET("comments")
     fun getComments(@Query("postId") postId: String): Call<List<Comment>>

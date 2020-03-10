@@ -92,8 +92,9 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="24dp"
-            android:text="@string/create_post_submit_label"
             android:enabled="@{viewModel.latlong != null}"
+            android:text="@string/create_post_submit_label"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
