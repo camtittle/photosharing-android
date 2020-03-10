@@ -4,12 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="post"
             type="com.camtittle.photosharing.ui.shared.CorePostModel" />
         <variable
             name="profile"
             type="com.camtittle.photosharing.engine.data.model.Profile" />
+        <variable
+            name="showDistance"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,6 +45,7 @@
             android:textAllCaps="false"
             android:textColor="@color/grayDark"
             android:textStyle="bold"
+            android:visibility="@{showDistance ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/postListItemUsernameText"
             tools:text="0.4km" />

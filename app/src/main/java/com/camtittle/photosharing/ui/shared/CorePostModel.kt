@@ -1,7 +1,10 @@
 package com.camtittle.photosharing.ui.shared
 
+import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import com.camtittle.photosharing.engine.data.network.model.FeedPost
 import com.camtittle.photosharing.engine.data.network.model.SinglePost
+import com.camtittle.photosharing.engine.data.network.model.VoteType
 import java.text.DateFormat
 
 data class CorePostModel(
@@ -11,7 +14,10 @@ data class CorePostModel(
     var timestamp: Long = 0,
     var distanceKm: Double = 0.0,
     var description: String = "",
-    var commentCount: Int = 0) {
+    var commentCount: Int = 0,
+    var upvotes: ObservableInt = ObservableInt(0),
+    var downvotes: ObservableInt = ObservableInt(0),
+    var hasVoted: ObservableField<VoteType?> = ObservableField()) {
 
     var formattedDate: String = ""
     var formattedDistance: String = ""
@@ -26,7 +32,8 @@ data class CorePostModel(
         fun fromFeedPost(feedPost: FeedPost): CorePostModel {
             return CorePostModel(feedPost.id, feedPost.userId,
                 feedPost.imageUrl, feedPost.timestamp, feedPost.distanceKm,
-                feedPost.description, feedPost.commentCount)
+                feedPost.description, feedPost.commentCount, ObservableInt(feedPost.upvotes),
+                ObservableInt(feedPost.downvotes), ObservableField(feedPost.hasVoted))
         }
 
         fun fromSinglePost(singlePost: SinglePost): CorePostModel {

@@ -28,7 +28,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             bind:post="@{post}"
-            bind:profile="@{model.profile}"/>
+            bind:profile="@{model.profile}"
+            bind:showDistance="@{false}"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/commentsRecyclerView"

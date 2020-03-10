@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.camtittle.photosharing.databinding.EditProfileFragmentBinding
 import com.camtittle.photosharing.engine.common.result.EventObserver
 import com.camtittle.photosharing.engine.common.result.Result
+import com.camtittle.photosharing.ui.KeyboardUtils
 import com.camtittle.photosharing.ui.auth.AuthViewModel
 import com.camtittle.photosharing.ui.auth.signin.SignInFragment
 
@@ -51,6 +52,7 @@ class EditProfileFragment : Fragment() {
 
     private fun observeSaveResponse() {
         viewModel.saveProfileDetailsResponse.observe(viewLifecycleOwner, EventObserver {
+            KeyboardUtils.hide(activity)
             navigateToFeed()
         })
     }

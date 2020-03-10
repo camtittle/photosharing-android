@@ -12,6 +12,8 @@ import com.camtittle.photosharing.engine.common.result.Result
 import com.camtittle.photosharing.engine.data.model.Profile
 import com.camtittle.photosharing.engine.data.network.ApiService
 import com.camtittle.photosharing.engine.data.network.model.FeedPost
+import com.camtittle.photosharing.engine.data.network.model.VoteRequest
+import com.camtittle.photosharing.engine.data.network.model.VoteType
 import com.camtittle.photosharing.engine.data.repository.ProfileRepository
 import com.camtittle.photosharing.ui.shared.CorePostModel
 import com.camtittle.photosharing.ui.shared.FeedItemContainer
@@ -45,7 +47,9 @@ class FeedViewModel : ViewModel() {
 
     fun updatePostsList(lat: Double, lon: Double) {
         Log.d(tag, "Getting feed for location $lat, $lon")
-        ApiService.api.getFeed(lat, lon).enqueue(object : Callback<List<FeedPost>> {
+
+        val token = AuthManager.getIdToken()
+        ApiService.api.getFeed(token, lat, lon).enqueue(object : Callback<List<FeedPost>> {
 
             override fun onResponse(call: Call<List<FeedPost>>, response: Response<List<FeedPost>>) {
                 response.body().let {
@@ -62,6 +66,28 @@ class FeedViewModel : ViewModel() {
                 _errors.postValue(Event("Error fetching feed. Check your network connection."))
             }
 
+        })
+
+    }
+
+    fun submitVote(postId: String, voteType: VoteType) {
+        Log.d(tag, "vote submitted for postId $postId")
+        val token = AuthManager.getIdToken()
+        val request = VoteRequest(postId, voteType)
+        ApiService.api.vote(token, request).enqueue(object : Callback<Void> {
+
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                response.code().let {
+                    if (it < 200 || it > 299) {
+                        _errors.postValue(Event("Error submitting vote. Status code: ${response.code()}"))
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e(tag, "Error fetching posts" + t.message)
+                _errors.postValue(Event("Error submitting vote. Check your network connection."))
+            }
         })
     }
 

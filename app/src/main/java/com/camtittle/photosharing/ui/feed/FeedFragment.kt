@@ -41,7 +41,7 @@ class FeedFragment : Fragment() {
             return binding.root
         }
 
-        val adapter = PostListAdapter()
+        val adapter = PostListAdapter(viewModel)
         binding.feedFragmentRecyclerView.adapter = adapter
 
         observePosts(adapter)

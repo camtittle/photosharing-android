@@ -5,11 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.camtittle.photosharing.engine.data.network.model.VoteType" />
         <variable
             name="model"
             type="com.camtittle.photosharing.ui.shared.FeedItemContainer" />
         <variable
             name="onClickListener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="onUpVoteClickListener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="onDownVoteClickListener"
             type="android.view.View.OnClickListener" />
 
     </data>
@@ -36,16 +43,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 bind:post="@{model.post}"
-                bind:profile="@{model.profile}"/>
+                bind:profile="@{model.profile}"
+                bind:showDistance="@{true}"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/upvoteButton"
+                    android:layout_width="31dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{onUpVoteClickListener}"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_arrow2"
+                    android:tint="@{model.post.hasVoted == VoteType.UP ? @color/colorPrimary : @color/grayDark}" />
+
+                <TextView
+                    android:id="@+id/upvoteCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{Integer.toString(model.post.upvotes)}"
+                    tools:text="2" />
+
+                <ImageButton
+                    android:id="@+id/downvoteButton"
+                    android:layout_width="31dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="32dp"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{onDownVoteClickListener}"
+                    android:padding="6dp"
+                    android:rotation="180"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_arrow2"
+                    android:tint="@{model.post.hasVoted == VoteType.DOWN ? @color/colorPrimary : @color/grayDark}" />
+
+                <TextView
+                    android:id="@+id/downvoteCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{Integer.toString(model.post.downvotes)}"
+                    tools:text="2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/postListItemCommentCount"

@@ -136,7 +136,12 @@ object AuthManager {
     }
 
     fun getIdToken(): String {
-        return instance.tokens.idToken.tokenString
+        return try {
+            instance.tokens.idToken.tokenString
+        } catch (ex: Exception) {
+            signOutListener()
+            ""
+        }
     }
 
     private fun refreshUserAttributes() {

@@ -9,5 +9,8 @@ class FeedPost {
     var distanceKm: Double = 0.0
     var description: String = ""
     var commentCount: Int = 0
+    var upvotes: Int = 0
+    var downvotes: Int = 0
+    var hasVoted: VoteType? = null
 
 }
