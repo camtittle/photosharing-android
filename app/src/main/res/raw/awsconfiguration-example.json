@@ -1,0 +1,11 @@
+{
+  "Version": "1.0",
+  "CognitoUserPool": {
+    "Default": {
+      "PoolId": "POOL HERE",
+      "AppClientId": "CLIENT ID HERE",
+      "AppClientSecret": "CLIENT SECRET HERE",
+      "Region": "eu-central-1"
+    }
+  }
+}

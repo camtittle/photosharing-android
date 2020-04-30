@@ -2,6 +2,7 @@ package com.camtittle.photosharing.ui.auth.signup
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -56,8 +57,10 @@ class SignUpFragment : Fragment() {
             when (it.status) {
                 Result.Status.ERROR -> showError(it.message ?: "Something went wrong")
                 Result.Status.SUCCESS -> {
+                    Log.d("SignUpFragment", "success: " + it.data?.confirmed)
                     it.data?.let { response ->
-                        if (response.confirmed) navigateToUnconfirmedAccount()
+                        if (!response.confirmed) navigateToUnconfirmedAccount()
+                        else navigateToSignIn()
                     }
                 }
             }
