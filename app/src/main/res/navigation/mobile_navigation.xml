@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/feedFragment"
         android:name="com.camtittle.photosharing.ui.feed.FeedFragment"
-        android:label="My Feed"
-        tools:layout="@layout/feed_fragment" >
+        android:label="Bean Feed"
+        tools:layout="@layout/feed_fragment">
         <action
             android:id="@+id/action_feedFragment_to_singlePostFragment"
             app:destination="@id/singlePostFragment"
@@ -39,6 +39,11 @@
                 app:exitAnim="@anim/slide_out_left"
                 app:popUpTo="@+id/signInFragment"
                 app:popUpToInclusive="true" />
+            <action
+                android:id="@+id/action_signInFragment_to_unconfirmedAccountFragment"
+                app:destination="@id/unconfirmedAccountFragment"
+                app:enterAnim="@anim/slide_in_left"
+                app:exitAnim="@anim/slide_out_left" />
         </fragment>
         <fragment
             android:id="@+id/signUpFragment"
@@ -81,8 +86,8 @@
         <fragment
             android:id="@+id/createPost"
             android:name="com.camtittle.photosharing.ui.createpost.capturephoto.CapturePhotoFragment"
-            android:label="New post"
-            tools:layout="@layout/create_post_fragment" >
+            android:label="New Bean Post"
+            tools:layout="@layout/create_post_fragment">
             <action
                 android:id="@+id/action_createPost_to_editPostDetailsFragment"
                 app:destination="@id/editPostDetailsFragment" />
@@ -90,7 +95,7 @@
         <fragment
             android:id="@+id/editPostDetailsFragment"
             android:name="com.camtittle.photosharing.ui.createpost.editpostdetails.EditPostDetailsFragment"
-            android:label="Edit Post"
+            android:label="Edit Bean Post"
             tools:layout="@layout/fragment_edit_post_details" />
         <action
             android:id="@+id/action_global_feedFragment"
@@ -106,7 +111,7 @@
     <fragment
         android:id="@+id/singlePostFragment"
         android:name="com.camtittle.photosharing.ui.singlepost.SinglePostFragment"
-        android:label="Post"
+        android:label="Bean Post"
         tools:layout="@layout/single_post_fragment">
         <argument
             android:name="postId"

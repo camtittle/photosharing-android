@@ -37,10 +37,12 @@ class SignUpFragment : Fragment() {
         addSubmitButtonClickListener()
         addSignInButtonClickListener()
         observeSignUpResult()
+        setLoading(false)
     }
 
     private fun addSubmitButtonClickListener() {
         binding.signUpSubmitButton.setOnClickListener {
+            setLoading(true)
             viewModel.signUp()
         }
     }
@@ -55,7 +57,10 @@ class SignUpFragment : Fragment() {
     private fun observeSignUpResult() {
         viewModel.signUpResponse.observe(viewLifecycleOwner, EventObserver {
             when (it.status) {
-                Result.Status.ERROR -> showError(it.message ?: "Something went wrong")
+                Result.Status.ERROR -> {
+                    showError(it.message ?: "Something went wrong")
+                    setLoading(false)
+                }
                 Result.Status.SUCCESS -> {
                     Log.d("SignUpFragment", "success: " + it.data?.confirmed)
                     it.data?.let { response ->
@@ -80,6 +85,16 @@ class SignUpFragment : Fragment() {
         val action = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment()
         findNavController().navigate(action)
 
+    }
+
+    private fun setLoading(loading: Boolean) {
+        if (loading) {
+            binding.signUpProgressBar.visibility = View.VISIBLE
+            binding.signUpSubmitButton.visibility = View.GONE
+        } else {
+            binding.signUpProgressBar.visibility = View.GONE
+            binding.signUpSubmitButton.visibility = View.VISIBLE
+        }
     }
 
 

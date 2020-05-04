@@ -8,8 +8,7 @@ object ApiService {
     val api: PhotosharingApi
 
 //     private const val baseUrl = "http://10.0.2.2:3000/"
-//    private const val baseUrl = "https://sh3pakf5e3.execute-api.eu-central-1.amazonaws.com/dev/"
-    private const val baseUrl = "http://7f50a7c0.ngrok.io/"
+    private const val baseUrl = "https://sh3pakf5e3.execute-api.eu-central-1.amazonaws.com/dev/"
 
     init {
         val retrofit = Retrofit.Builder()

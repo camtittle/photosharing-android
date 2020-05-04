@@ -61,7 +61,7 @@ class PostListAdapter(val viewModel: FeedViewModel) : ListAdapter<FeedItemContai
             if (item.post.hasVoted.get() != VoteType.DOWN) {
                 item.post.hasVoted.set(VoteType.DOWN)
                 item.post.downvotes.apply { set(get() + 1) }
-                viewModel.submitVote(item.post.id, VoteType.UP)
+                viewModel.submitVote(item.post.id, VoteType.DOWN)
             }
         }
     }

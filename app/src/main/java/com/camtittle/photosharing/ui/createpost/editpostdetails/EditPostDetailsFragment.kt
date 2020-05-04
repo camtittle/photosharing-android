@@ -56,10 +56,12 @@ class EditPostDetailsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        if (viewModel.currentPhotoPath.isBlank()) {
-            navigateToCapturePhotoFragment()
-        } else {
+        if (!viewModel.currentPhotoPath.isNullOrBlank()) {
             showSavedFileInImageView()
+        } else if (viewModel.imageBitmap != null) {
+            showBitmapInImageView(viewModel.imageBitmap)
+        } else {
+            navigateToCapturePhotoFragment()
         }
     }
 
@@ -70,19 +72,25 @@ class EditPostDetailsFragment : Fragment() {
 
     private fun showSavedFileInImageView() {
         getSavedBitmap()?.also {
-            scaleBitmap(it).also { scaledBitmap ->
-                binding.photoPreview.setImageBitmap(scaledBitmap)
-                viewModel.imageBitmap = scaledBitmap
-
-                val b64 = ImageUtils.getBase64(ImageUtils.compressBitmapToJpeg(scaledBitmap))
-                Log.d("EditPost", b64.substring(0, 1000))
-            }
+            viewModel.imageBitmap = it
+            showBitmapInImageView(it)
         }
 
     }
 
+    private fun showBitmapInImageView(it: Bitmap?) {
+        if (it == null) return
+        scaleBitmap(it).also { scaledBitmap ->
+            binding.photoPreview.setImageBitmap(scaledBitmap)
+            viewModel.imageBitmap = scaledBitmap
+
+            val b64 = ImageUtils.getBase64(ImageUtils.compressBitmapToJpeg(scaledBitmap))
+            Log.d("EditPost", b64.substring(0, 1000))
+        }
+    }
+
     private fun getSavedBitmap(): Bitmap? {
-        if (!viewModel.currentPhotoPath.isBlank()) {
+        if (!viewModel.currentPhotoPath.isNullOrBlank()) {
             return try {
                 BitmapFactory.decodeFile(viewModel.currentPhotoPath)
             } catch (e: FileNotFoundException) {

@@ -36,6 +36,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/defaultPadding"
                 android:text="@string/open_camera_label" />
+
+            <Button
+                android:id="@+id/select_photo_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/defaultPadding"
+                android:text="@string/select_photo_label" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

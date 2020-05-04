@@ -18,11 +18,22 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                android:foregroundGravity="center"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/toolbarLogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_onlybeans_logo"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="12dp" />
+            </androidx.appcompat.widget.Toolbar>
 
             <ProgressBar
                 android:id="@+id/progressBar"

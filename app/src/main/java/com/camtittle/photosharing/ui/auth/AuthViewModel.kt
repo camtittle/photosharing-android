@@ -1,6 +1,7 @@
 package com.camtittle.photosharing.ui.auth
 
 import android.util.Log
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,6 +37,8 @@ class AuthViewModel : ViewModel() {
 
     val tag = AuthViewModel::class.java.name
 
+    var loading = ObservableBoolean(false)
+
     fun signUp() {
         val email = model.email
         val password = model.password
@@ -61,8 +64,8 @@ class AuthViewModel : ViewModel() {
     fun confirmAccount() {
         val email = model.email
         val code = model.confirmationCode
-        Log.d(tag, "Confirming $email with code: $code")
         if (email.isNotEmpty() && code.isNotEmpty()) {
+            Log.d(tag, "Confirming $email with code: $code")
             AuthManager.confirmAccount(email, code, object : ServiceCallback<ConfirmResponse> {
                 override fun onSuccess(response: ConfirmResponse) {
                     if (response.confirmed) {
@@ -95,10 +98,12 @@ class AuthViewModel : ViewModel() {
         val token = AuthManager.getIdToken()
         Log.d(tag, "Saving profile details with name: $name")
         if (name.isNotEmpty()) {
+            loading.set(true)
             val updateRequest = UpdateProfileRequest(name)
             ApiService.api.updateProfile(token, updateRequest).enqueue(object : Callback<Void> {
                 override fun onFailure(call: Call<Void>, t: Throwable) {
-                    Log.e(tag, "Error saving profile details" + t.message   )
+                    Log.e(tag, "Error saving profile details " + t.message)
+                    loading.set(false)
                 }
 
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
@@ -122,7 +127,9 @@ class AuthViewModel : ViewModel() {
         AuthManager.signIn(email, password, object : ServiceCallback<SignInResponse> {
             override fun onSuccess(response: SignInResponse) {
                 _signInResponse.postValue(ResultEvent.success(response))
-                model.clear()
+                if (response.confirmed) {
+                    model.clear()
+                }
             }
 
             override fun onError(error: CallbackError) {

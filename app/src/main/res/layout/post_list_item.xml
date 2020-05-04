@@ -44,14 +44,17 @@
                 android:layout_height="wrap_content"
                 bind:post="@{model.post}"
                 bind:profile="@{model.profile}"
-                bind:showDistance="@{true}"/>
+                bind:showDistance="@{false}"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="8dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="2dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
 
                 <ImageButton
                     android:id="@+id/upvoteButton"
@@ -59,10 +62,10 @@
                     android:layout_height="30dp"
                     android:background="@android:color/transparent"
                     android:onClick="@{onUpVoteClickListener}"
-                    android:padding="6dp"
+                    android:padding="2dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_arrow2"
-                    android:tint="@{model.post.hasVoted == VoteType.UP ? @color/colorPrimary : @color/grayDark}" />
+                    tools:src="@drawable/ic_hazelnut"
+                    android:src="@{model.post.hasVoted == VoteType.UP ? @drawable/ic_hazelnut_filled : @drawable/ic_hazelnut}" />
 
                 <TextView
                     android:id="@+id/upvoteCount"
@@ -78,11 +81,10 @@
                     android:layout_marginLeft="32dp"
                     android:background="@android:color/transparent"
                     android:onClick="@{onDownVoteClickListener}"
-                    android:padding="6dp"
-                    android:rotation="180"
+                    android:padding="2dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_arrow2"
-                    android:tint="@{model.post.hasVoted == VoteType.DOWN ? @color/colorPrimary : @color/grayDark}" />
+                    tools:src="@drawable/ic_water_bottle"
+                    android:src="@{model.post.hasVoted == VoteType.DOWN ? @drawable/ic_water_bottle_filled : @drawable/ic_water_bottle}" />
 
                 <TextView
                     android:id="@+id/downvoteCount"

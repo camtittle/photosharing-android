@@ -14,6 +14,7 @@ import com.camtittle.photosharing.engine.common.async.ServiceCallback
 import java.lang.Exception
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amazonaws.mobile.client.UserStateDetails
+import com.amazonaws.services.cognitoidentityprovider.model.UserNotConfirmedException
 
 object AuthManager {
 
@@ -92,7 +93,7 @@ object AuthManager {
 
             override fun onResult(result: SignUpResult?) {
                 if (result == null) {
-                    callback.onError(CallbackError("SignUp Result was null"))
+                    callback.onError(CallbackError("Confirm Result was null"))
                     return
                 }
 
@@ -116,20 +117,26 @@ object AuthManager {
     fun signIn(username: String, password: String, callback: ServiceCallback<SignInResponse>) {
         instance.signIn(username, password, null, object : Callback<SignInResult> {
             override fun onResult(result: SignInResult?) {
-                if (result?.signInState == SignInState.DONE) {
-                    Log.d(tag, instance.tokens.idToken.tokenString)
-                    callback.onSuccess(SignInResponse())
-                } else {
-                    callback.onError(CallbackError("Sign In state was not 'DONE'"))
+                when (result?.signInState) {
+                    SignInState.DONE -> {
+                        Log.d(tag, instance.tokens.idToken.tokenString)
+                        callback.onSuccess(SignInResponse(true))
+                    }
+                    else -> callback.onError(CallbackError("Sign In state was not 'DONE'"))
                 }
             }
 
             override fun onError(e: Exception?) {
-                callback.onError(CallbackError(e?.message, e))
+                // Catch the case where the error is that the user is unconfirmed
+                if (e is UserNotConfirmedException) {
+                    callback.onSuccess(SignInResponse(false))
+                } else {
+                    callback.onError(CallbackError(e?.message, e))
+                }
             }
         })
     }
-
+    
     fun signOut() {
         Log.d(tag, "signOut")
         instance.signOut()

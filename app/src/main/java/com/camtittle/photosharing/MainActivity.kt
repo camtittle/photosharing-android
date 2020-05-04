@@ -3,6 +3,7 @@ package com.camtittle.photosharing
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.main_activity)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         setupNavigation()
 
     }
@@ -41,6 +43,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNavigation() {
         val navController = findNavController(this, R.id.nav_host_fragment)
+
+        val fullScreenFragments = arrayOf(R.id.signUpFragment, R.id.signInFragment)
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            if (fullScreenFragments.contains(destination.id)) {
+                toolbar.visibility = View.GONE
+            } else {
+                toolbar.visibility = View.VISIBLE
+            }
+        }
 
         // Update action bar to reflect navigation
         val appBarConfiguration = AppBarConfiguration

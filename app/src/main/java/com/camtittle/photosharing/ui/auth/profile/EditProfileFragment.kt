@@ -63,8 +63,10 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun refreshProfile() {
+        viewModel.loading.set(true)
         viewModel.refreshProfileData()?.let {
             it.observe(viewLifecycleOwner, Observer { profileResult ->
+                viewModel.loading.set(false)
                 if (profileResult.status == Result.Status.SUCCESS) {
                     viewModel.model.name = profileResult.data?.name ?: ""
                 }

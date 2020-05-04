@@ -19,7 +19,7 @@ import retrofit2.Response
 
 class CreatePostViewModel : ViewModel() {
 
-    lateinit var currentPhotoPath: String
+    var currentPhotoPath: String? = null
     var description = ObservableField<String>("")
     var imageBitmap: Bitmap? = null
     var latlong = ObservableField<LatLong?>()
@@ -89,7 +89,9 @@ class CreatePostViewModel : ViewModel() {
         }
     }
 
-    private fun clearModel() {
+    fun clearModel() {
         description.set("")
+        imageBitmap = null
+        currentPhotoPath = null
     }
 }

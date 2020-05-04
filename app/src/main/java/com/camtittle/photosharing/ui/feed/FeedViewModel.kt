@@ -85,7 +85,7 @@ class FeedViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e(tag, "Error fetching posts" + t.message)
+                Log.e(tag, "Error submitting vote" + t.message)
                 _errors.postValue(Event("Error submitting vote. Check your network connection."))
             }
         })

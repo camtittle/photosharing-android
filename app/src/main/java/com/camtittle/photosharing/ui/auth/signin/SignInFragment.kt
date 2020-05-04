@@ -44,6 +44,7 @@ class SignInFragment : Fragment() {
         addSignUpButtonClickListener()
         addSignInButtonClickListener()
         observeSignInResponse()
+        setLoading(false)
     }
 
     private fun addSignUpButtonClickListener() {
@@ -56,6 +57,7 @@ class SignInFragment : Fragment() {
     private fun addSignInButtonClickListener() {
         binding.signInSubmitButton.setOnClickListener {
             hideKeyboard()
+            setLoading(true)
             viewModel.signIn()
         }
     }
@@ -64,8 +66,19 @@ class SignInFragment : Fragment() {
         viewModel.signInResponse.observe(viewLifecycleOwner, EventObserver {
             Log.d(logTag, "observing sign in response")
             when (it.status) {
-                Result.Status.ERROR -> toast(it.message ?: "An error occurred")
-                Result.Status.SUCCESS -> navigateToFeed()
+                Result.Status.ERROR -> {
+                    setLoading(false)
+                    toast(it.message ?: "An error occurred")
+                }
+                Result.Status.SUCCESS -> {
+                    if (it.data == null) {
+                        toast(it.message ?: "An error occurred")
+                    } else if (it.data.confirmed){
+                        navigateToFeed()
+                    } else {
+                        navigateToConfirmAccount()
+                    }
+                }
             }
 
         })
@@ -85,8 +98,23 @@ class SignInFragment : Fragment() {
         findNavController().navigate(action)
     }
 
+    private fun navigateToConfirmAccount() {
+        val action = SignInFragmentDirections.actionSignInFragmentToUnconfirmedAccountFragment()
+        findNavController().navigate(action)
+    }
+
     private fun hideKeyboard() {
         KeyboardUtils.hide(activity)
+    }
+
+    private fun setLoading(loading: Boolean) {
+        if (loading) {
+            binding.signInProgressBar.visibility = View.VISIBLE
+            binding.signInSubmitButton.visibility = View.GONE
+        } else {
+            binding.signInProgressBar.visibility = View.GONE
+            binding.signInSubmitButton.visibility = View.VISIBLE
+        }
     }
 
 }

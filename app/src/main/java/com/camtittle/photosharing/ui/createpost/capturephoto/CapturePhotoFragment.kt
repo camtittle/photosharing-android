@@ -3,6 +3,7 @@ package com.camtittle.photosharing.ui.createpost.capturephoto
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Environment
@@ -14,14 +15,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.navigation.fragment.findNavController
-
 import com.camtittle.photosharing.R
+
 import com.camtittle.photosharing.databinding.CreatePostFragmentBinding
 import com.camtittle.photosharing.ui.createpost.CreatePostViewModel
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+
+
+
+
 
 class CapturePhotoFragment : Fragment() {
 
@@ -33,6 +38,7 @@ class CapturePhotoFragment : Fragment() {
     private lateinit var binding: CreatePostFragmentBinding
 
     private val REQUEST_IMAGE_CAPTURE = 1
+    private val PICK_IMAGE = 2
     private val fileProviderAuthority = "com.camtittle.photosharing.fileprovider"
 
     override fun onCreateView(
@@ -51,12 +57,31 @@ class CapturePhotoFragment : Fragment() {
         }
 
         addSelectPhotoButtonListener()
+        addOpenCameraButtonListener()
     }
 
-    private fun addSelectPhotoButtonListener() {
+    override fun onResume() {
+        super.onResume()
+        viewModel.clearModel()
+    }
+
+    private fun addOpenCameraButtonListener() {
         binding.openCameraButton.setOnClickListener {
             dispatchTakePictureIntent()
         }
+    }
+
+
+    private fun addSelectPhotoButtonListener() {
+        binding.selectPhotoButton.setOnClickListener {
+            dispatchPickImageIntent()
+        }
+    }
+
+    private fun dispatchPickImageIntent() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, PICK_IMAGE)
     }
 
     private fun dispatchTakePictureIntent() {
@@ -98,7 +123,7 @@ class CapturePhotoFragment : Fragment() {
     }
 
     private fun showCameraMissingError() {
-        getString(R.string.no_camera_error).let {message ->
+        getString(R.string.no_camera_error).let { message ->
             Toast.makeText(activity, message, Toast.LENGTH_SHORT)
                 .show()
         }
@@ -114,7 +139,25 @@ class CapturePhotoFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             navigateToEditDetailsFragment()
+        } else if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+
+            val url = data?.data;
+            if (data == null || url == null) {
+                getString(com.camtittle.photosharing.R.string.capture_error).let { message ->
+                    Toast.makeText(activity, message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+                return
+            }
+            context?.let {
+                val stream = it.contentResolver.openInputStream(url)
+                val bitmap = BitmapFactory.decodeStream(stream)
+                viewModel.imageBitmap = bitmap
+                navigateToEditDetailsFragment()
+            }
         }
+
+
     }
 
     private fun navigateToEditDetailsFragment() {
