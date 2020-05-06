@@ -54,6 +54,8 @@ class UnconfirmedAccountFragment : Fragment() {
                     KeyboardUtils.hide(activity)
                 }
                 Result.Status.ERROR -> {
+                    setLoading(false)
+                    KeyboardUtils.hide(activity)
                     showError(it.message ?: "Something went wrong")
                 }
             }
