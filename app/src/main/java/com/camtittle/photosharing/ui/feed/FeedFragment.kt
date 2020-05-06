@@ -54,9 +54,10 @@ class FeedFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        activity?.let {
-            observeLocation(it)
-        }
+        // Location disabled for OnlyBeans
+//        activity?.let {
+//            observeLocation(it)
+//        }
 
         refreshPosts()
     }
@@ -73,13 +74,17 @@ class FeedFragment : Fragment() {
 
     private fun refreshPosts() {
         binding.feedSwipeRefresh.isRefreshing = true
-        location.let {
-            if (it == null) {
-                shouldRefreshOnNextLocation = true
-            } else {
-                viewModel.updatePostsList(it.lat, it.long)
-            }
-        }
+        // Location disabled for OnlyBeans
+//        location.let {
+//            if (it == null) {
+//                shouldRefreshOnNextLocation = true
+//            } else {
+//                viewModel.updatePostsList(it.lat, it.long)
+//            }
+//        }
+
+        val location = LocationService.getOnlyBeansLocation()
+        viewModel.updatePostsList(location.lat, location.long)
     }
 
     private fun observePosts(adapter: PostListAdapter) {

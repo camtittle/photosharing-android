@@ -36,6 +36,10 @@ class LocationService {
 
             return instance
         }
+
+        fun getOnlyBeansLocation(): LatLong {
+            return LatLong(53.4788783, -2.2381378)
+        }
     }
 
     fun initialise(activity: Activity) {

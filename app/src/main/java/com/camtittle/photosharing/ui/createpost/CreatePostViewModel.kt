@@ -13,6 +13,7 @@ import com.camtittle.photosharing.engine.data.network.model.CreateImagePostReque
 import com.camtittle.photosharing.engine.data.network.model.CreatedPost
 import com.camtittle.photosharing.engine.image.ImageUtils
 import com.camtittle.photosharing.engine.location.LatLong
+import com.camtittle.photosharing.engine.location.LocationService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,7 +23,6 @@ class CreatePostViewModel : ViewModel() {
     var currentPhotoPath: String? = null
     var description = ObservableField<String>("")
     var imageBitmap: Bitmap? = null
-    var latlong = ObservableField<LatLong?>()
 
     private val tag = CreatePostViewModel::class.java.name
 
@@ -68,11 +68,8 @@ class CreatePostViewModel : ViewModel() {
             return null
         }
 
-        val currentLatLong = latlong.get()
-        if (currentLatLong == null) {
-            _creationResult.postValue(ResultEvent.error("Cannot post without location"))
-            return null
-        }
+        // OnlyBeans uses a dummy location
+        val currentLatLong = LocationService.getOnlyBeansLocation()
 
         return CreateImagePostRequest(getImageBase64(), currentDescription,
             currentLatLong.lat, currentLatLong.long)

@@ -49,7 +49,9 @@ class EditPostDetailsFragment : Fragment() {
 
             observeCreationResult()
             addSubmitButtonClickListener()
-            observeLocation(it)
+
+            // OnlyBeans doesn't use location
+            // observeLocation(it)
         }
     }
 
@@ -113,13 +115,7 @@ class EditPostDetailsFragment : Fragment() {
     private fun addSubmitButtonClickListener() {
         binding.createPostSubmitButton.setOnClickListener {
             KeyboardUtils.hide(activity)
-            viewModel.latlong.get().let {
-                if (it == null) {
-                    showSnackbar("Cannot submit post without location")
-                } else {
-                    viewModel.submitPost()
-                }
-            }
+            viewModel.submitPost()
         }
     }
 
@@ -142,7 +138,7 @@ class EditPostDetailsFragment : Fragment() {
 
     private fun observeLocation(activity: Activity) {
         LocationService.getInstance(activity).location.observe(viewLifecycleOwner, Observer {
-            viewModel.latlong.set(it)
+            // viewModel.latlong.set(it)
         })
     }
 

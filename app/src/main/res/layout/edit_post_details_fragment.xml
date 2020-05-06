@@ -44,44 +44,44 @@
             android:hint="@string/create_post_description_hint"
             android:inputType="textMultiLine"
             android:text="@={viewModel.description}"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintBottom_toTopOf="@+id/createPostSubmitButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            android:minHeight="30dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/createPostSubmitButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/linearLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:layout_marginLeft="16dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:layout_marginRight="16dp"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:minHeight="30dp"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/createPostSubmitButton"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent">-->
 
-            <ProgressBar
-                android:id="@+id/findingLocationSpinner"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:visibility="@{viewModel.latlong == null ? View.VISIBLE : View.GONE}"
-                tools:visibility="gone" />
+<!--            <ProgressBar-->
+<!--                android:id="@+id/findingLocationSpinner"-->
+<!--                style="?android:attr/progressBarStyle"-->
+<!--                android:layout_width="30dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:visibility="@{viewModel.latlong == null ? View.VISIBLE : View.GONE}"-->
+<!--                tools:visibility="gone" />-->
 
-            <TextView
-                android:id="@+id/locationStatusTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:text="@{viewModel.latlong == null ? @string/searching_location_label : @string/found_location_label}"
-                android:textColor="@color/grayDark"
-                android:textSize="14sp"
-                tools:text="@string/found_location_label" />
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/locationStatusTextView"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@{viewModel.latlong == null ? @string/searching_location_label : @string/found_location_label}"-->
+<!--                android:textColor="@color/grayDark"-->
+<!--                android:textSize="14sp"-->
+<!--                tools:text="@string/found_location_label" />-->
+<!--        </LinearLayout>-->
 
         <Button
             android:id="@+id/createPostSubmitButton"
@@ -92,7 +92,6 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="24dp"
-            android:enabled="@{viewModel.latlong != null}"
             android:text="@string/create_post_submit_label"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
