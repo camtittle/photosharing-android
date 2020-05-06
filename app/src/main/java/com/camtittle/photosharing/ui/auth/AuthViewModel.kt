@@ -79,6 +79,7 @@ class AuthViewModel : ViewModel() {
 
                 override fun onError(error: CallbackError) {
                     Log.d(tag, "ERROR. " + error.msg)
+                    _signInResponse.postValue(ResultEvent.error("Something went wrong. Did you enter the code correctly?"))
                 }
             })
 
