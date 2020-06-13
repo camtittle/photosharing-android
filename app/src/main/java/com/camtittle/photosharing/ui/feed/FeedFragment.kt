@@ -34,12 +34,7 @@ class FeedFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProviders.of(this).get(FeedViewModel::class.java)
 
-
         binding = FeedFragmentBinding.inflate(inflater, container, false)
-
-        if (!ensureAuthorised() || context == null) {
-            return binding.root
-        }
 
         val adapter = PostListAdapter(viewModel)
         binding.feedFragmentRecyclerView.adapter = adapter
@@ -54,6 +49,10 @@ class FeedFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        if (!ensureAuthorised() || context == null) {
+            return
+        }
+
         // Location disabled for OnlyBeans
 //        activity?.let {
 //            observeLocation(it)
@@ -64,12 +63,16 @@ class FeedFragment : Fragment() {
 
     private fun ensureAuthorised(): Boolean {
         if (!viewModel.isSignedIn()) {
-            val action = FeedFragmentDirections.actionGlobalAuthNavigation()
-            findNavController().navigate(action)
+            navigateToAuth()
             return false
         }
 
         return true
+    }
+
+    private fun navigateToAuth() {
+        val action = FeedFragmentDirections.actionGlobalAuthNavigation()
+        findNavController().navigate(action)
     }
 
     private fun refreshPosts() {

@@ -17,15 +17,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AuthManager.init(applicationContext)
-        AuthManager.setSignOutListener {
-            runOnUiThread { onSignOut() }
-        }
-
         setContentView(R.layout.main_activity)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         setupNavigation()
+
+        AuthManager.setSignOutListener {
+            runOnUiThread {
+                onSignOut()
+            }
+        }
+        AuthManager.init(applicationContext)
 
     }
 
